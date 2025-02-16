@@ -1,0 +1,83 @@
+.prodout-list {
+
+    .bread-crumbs {
+        margin-bottom: 15px;
+    }
+    .bread-crumbs .dropdown-item:hover {
+        background: #EDE4CB;
+        color: #966A09;
+    }
+    .bread-crumbs .active {
+        background: #EDE4CB;
+        color: #966A09;
+    }
+
+    .goods-item {
+        position: relative;
+    
+        @include mobile {
+            padding: 8px;
+        }
+    
+        // https: //blog.csdn.net/pitaogao/article/details/112727743
+        .img-box {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .img-box::after {
+            content: '';
+            display: block;
+            padding-bottom: 100%;
+        }
+    
+        .goods-pic {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: cover;
+        }
+    
+        .card-title {
+            font-size: 20px;
+    
+            @include mobile {
+                font-size: 16px;
+            }
+        }
+    
+        .old-price {
+            font-size: 16px;
+    
+            @include mobile {
+                font-size: 14px;
+            }
+        }
+    
+        .tag-cat-list {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .tag-list {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+    
+        .product-tag {
+            background: #DBBE5D;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-top: 16px;
+            margin-right: 16px;
+        }
+    }
+}

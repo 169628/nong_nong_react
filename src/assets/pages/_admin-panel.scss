@@ -1,0 +1,205 @@
+//layout admin-header
+
+.admin-header {
+  background-color: $white;
+  @include mobile {
+    background-color: $primary-500;
+  }
+}
+
+.admin-header-container {
+  max-width: 1296px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 1399px) {
+    max-width: 1116px;
+  }
+  @media (max-width: 1199px) {
+    max-width: 936px;
+  }
+  @include pad {
+    max-width: 696px;
+  }
+
+  @include mobile {
+    max-width: 516px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+.admin-header {
+  .offcanvas-body {
+    background-color: $white;
+  }
+}
+
+.admin-header-logo {
+  width: 252px;
+  @include mobile {
+    width: 160px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+//layout side navbar
+
+.admin-side {
+  width: 20vw;
+  height: 90vh;
+}
+.admin-side-container {
+  width: 50%;
+  margin-left: auto;
+  @media (max-width: 1375px) {
+    width: 70%;
+  }
+  @media (max-width: 987px) {
+    width: 80%;
+  }
+  @media (max-width: 865px) {
+    width: 100%;
+  }
+}
+
+.admin-contnet {
+  width: 80vw;
+  @include mobile {
+    width: 100vw;
+  }
+}
+.admin-content-container {
+  width: 90%;
+  margin-right: auto;
+  @include mobile {
+    width: 516px;
+    margin-left: auto;
+  }
+}
+
+//page admin-panel
+
+#admin-product-name {
+  width: 387px;
+  @media (max-width: 1488px) {
+    width: 300px;
+  }
+  @media (max-width: 1239px) {
+    width: 250px;
+  }
+  @media (max-width: 1094px) {
+    width: 200px;
+  }
+  @media (max-width: 954px) {
+    width: 160px;
+  }
+  &:focus {
+    outline: none;
+    border-color: inherit;
+    box-shadow: none;
+  }
+  &::placeholder {
+    color: $gary-500;
+  }
+}
+
+.admin-product-select {
+  width: 387px;
+  @media (max-width: 1488px) {
+    width: 300px;
+  }
+  @media (max-width: 1239px) {
+    width: 250px;
+  }
+  @media (max-width: 1094px) {
+    width: 200px;
+  }
+  @media (max-width: 954px) {
+    width: 160px;
+  }
+  &:focus {
+    outline: none;
+    border-color: inherit;
+    box-shadow: none;
+  }
+}
+
+.admin-create-modal-btn {
+  width: 45%;
+}
+
+.admin-create-btn {
+  width: 131px;
+}
+
+//表格
+
+.admin-table {
+  width: 1150px;
+  thead {
+    td {
+      background-color: $primary-700;
+      color: $white;
+      padding: 16px 35px;
+    }
+  }
+  tbody {
+    td {
+      background-color: $white;
+      padding: 16px 35px;
+      color: $gary-500;
+    }
+  }
+
+  .dropdown-toggle {
+    &::after {
+      content: none;
+      display: none;
+    }
+  }
+}
+
+.btn-group {
+  .admin-edit-btn {
+    &:hover {
+      background-color: $white;
+      color: $gary-500;
+    }
+    &:active {
+      background-color: $white;
+      color: $gary-500;
+    }
+  }
+}
+
+//頁尾頁碼按鈕
+
+.admin-pagination-btn {
+  background-color: $white;
+  width: 40px;
+  height: 40px;
+  color: $gary-300;
+  border: 1px $gary-300 solid;
+  border-radius: 4px;
+  &:hover {
+    color: $gary-500;
+    border: 1px $gary-500 solid;
+  }
+}
+
+.admin-pagination-dropdown {
+  button {
+    background-color: $white;
+    &:hover {
+      background-color: $white;
+      color: $gary-500;
+      border: 1px $gary-500 solid;
+    }
+  }
+}

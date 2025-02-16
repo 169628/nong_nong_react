@@ -1,0 +1,127 @@
+textarea{
+  resize: none;
+}
+
+.cart-out-progressbar {
+  max-width: 747px;
+
+  .span-full {
+    width: 40px;
+    height: 40px;
+    background-color: $primary-500;
+    color: $white;
+    font-size: 24px;
+    text-align: center;
+  }
+  .span-outline {
+    width: 40px;
+    height: 40px;
+    background-color: $tertiary-100;
+    border: 1px solid $primary-500;
+    color: $primary-500;
+    font-size: 24px;
+    text-align: center;
+  }
+  .font-probar {
+    color: $primary-500;
+    letter-spacing: 5%;
+    font-weight: $font-weight-semibold;
+    font-size: 18px;
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+  .finish-position {
+    right: -30px;
+  }
+}
+
+.cart-icon-vector {
+  width: 24px;
+  height: 24px;
+}
+
+.cart-product-photo {
+  width: 80px;
+  height: 86px;
+}
+
+.cart-price-color {
+  @include mobile {
+    color: $primary-500;
+  }
+}
+
+.cart-btn-hover {
+  &:hover {
+    color: $white;
+    background-color: $primary-300;
+    border: 0;
+  }
+  &:active {
+    color: $white;
+    background-color: $primary-300;
+    border: 0;
+  }
+}
+
+.cart-alert-text {
+  font-size: 14px;
+  color: #d16a30;
+  margin: 0;
+}
+
+.cart-input-form {
+  font-size: 16px;
+  color: #797979;
+  border: $gary-500 solid 1px;
+  border-radius: 4px;
+  background-color: $tertiary-100;
+  padding: 8px 16px;
+  outline: none;
+  &::placeholder {
+    color: #797979;
+  }
+  width: 311px;
+  @media (max-width: 1400px) {
+    width: 254px;
+  }
+  &-info{
+    width: 100%;
+  }
+}
+
+.storage{
+  @include mobile {
+      flex-direction: column;
+  }
+  .btn{
+    width: 155px;
+    @include mobile {
+      width: 100%;
+    }
+  }
+}
+
+.cart-info-bgcolor {
+  background-color: #ede4cb;
+}
+.cart-info-li-text {
+  font-size: 14px;
+}
+.cart-info-checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.cart-info-top-border {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+.cart-info-bottom-border {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.cart-total-price-font {
+  font-size: 18px;
+  font-weight: 500;
+}
