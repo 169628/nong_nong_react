@@ -3,6 +3,7 @@ import Home from "../pages/Home";
 import Products from "../pages/Products";
 import Product from "../pages/Product";
 import Cart from "../pages/Cart";
+import Page404 from "../pages/Page404";
 
 const routes = [
   {
@@ -24,6 +25,10 @@ const routes = [
       {
         path: "cart",
         element: <Cart />,
+      },
+      {
+        path: "*",
+        element: <Page404 />,
       },
     ],
   },
