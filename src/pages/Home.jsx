@@ -23,7 +23,6 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=最新上架`
       );
-      console.log(result.data.data[0].results);
       setNewGoods(result.data.data[0].results);
     } catch (error) {
       console.log(error);
@@ -216,16 +215,16 @@ function Home() {
             <div className="search-tag-list position-absolute">
               <ul className="list-unstyled search-tags">
                 <li className="search-tag">
-                  <a href="product_list?tag=有機">#有機</a>
+                  <a href={`/#/products/search/有機`}>#有機</a>
                 </li>
                 <li className="search-tag">
-                  <a href="product_list.html">#捐贈</a>
+                  <a href={`/#/products/search/捐贈`}>#捐贈</a>
                 </li>
                 <li className="search-tag">
-                  <a href="product_list.html">#熱門</a>
+                  <a href={`/#/products/search/熱門`}>#熱門</a>
                 </li>
                 <li className="search-tag">
-                  <a href="product_list.html">#最新</a>
+                  <a href={`/#/products/search/最新`}>#最新</a>
                 </li>
               </ul>
             </div>
@@ -264,32 +263,27 @@ function Home() {
                 {/* 選單第二層 */}
                 <ul className="list-unstyled dropdown-menu-lev-two">
                   <li className="mb-6">
-                    <a className="search-item search-item-all" href="#">
+                    <a className="search-item search-item-all" href={`/#/products`}>
                       所有種類
                     </a>
                   </li>
                   <li className="item-current">
-                    <a className="search-item" href="#">
+                    <a className="search-item" href={`/#/products/search/葉菜類`}>
                       葉菜類
                     </a>
                   </li>
                   <li>
-                    <a className="search-item" href="#">
+                    <a className="search-item" href={`/#/products/search/根莖瓜果類`}>
                       根莖瓜果類
                     </a>
                   </li>
                   <li>
-                    <a className="search-item" href="#">
+                    <a className="search-item" href={`/#/products/search/菌菇類`}>
                       菌菇類
                     </a>
                   </li>
                   <li>
-                    <a className="search-item" href="#">
-                      豆類
-                    </a>
-                  </li>
-                  <li>
-                    <a className="search-item" href="#">
+                    <a className="search-item" href={`/#/products/search/安心水果類`}>
                       安心水果類
                     </a>
                   </li>
@@ -313,7 +307,7 @@ function Home() {
                   最新上架
                 </h2>
               </div>
-              <a href="#" className="read-more">
+              <a href={`/#/products`} className="read-more">
                 看更多<i className="bi bi-arrow-right ms-2"></i>
               </a>
             </div>
@@ -326,7 +320,7 @@ function Home() {
                     key={product._id}
                   >
                     <div className="img-box">
-                      <a href="product.html">
+                      <a href={`/#/product/${product._id}`}>
                         <img
                           src="../images/index/product-01.jpg"
                           className="card-img-top goods-pic"
@@ -358,7 +352,7 @@ function Home() {
                     </div>
 
                     <div className="card-body">
-                      <a href="product.html">
+                      <a href={`/#/product/${product._id}`}>
                         <h3 className="card-title mb-1">{product.name}</h3>
                       </a>
                       <span className="text-gary-500 mb-2">{product.unit}</span>
@@ -401,7 +395,7 @@ function Home() {
                   熱門商品
                 </h2>
               </div>
-              <a href="#" className="read-more">
+              <a href={`/#/products`} className="read-more">
                 看更多<i className="bi bi-arrow-right ms-2"></i>
               </a>
             </div>
@@ -414,7 +408,7 @@ function Home() {
                     key={product._id}
                   >
                     <div className="img-box">
-                      <a href="product.html">
+                      <a href={`/#/product/${product._id}`}>
                         <img
                           src="../images/index/product-01.jpg"
                           className="card-img-top goods-pic"
@@ -446,7 +440,7 @@ function Home() {
                     </div>
 
                     <div className="card-body">
-                      <a href="product.html">
+                      <a href={`/#/product/${product._id}`}>
                         <h3 className="card-title mb-1">{product.name}</h3>
                       </a>
                       <span className="text-gary-500 mb-2">{product.unit}</span>
@@ -500,7 +494,7 @@ function Home() {
                     key={product._id}
                   >
                     <div className="img-box">
-                      <a href="product.html">
+                      <a href={`/#/product/${product._id}`}>
                         <img
                           src="../images/index/product-03.jpg"
                           className="card-img-top goods-pic"
@@ -531,7 +525,7 @@ function Home() {
                       )}
                     </div>
                     <div className="card-body">
-                      <a href="product.html">
+                      <a href={`/#/product/${product._id}`}>
                         <h3 className="card-title mb-1">{product.name}</h3>
                       </a>
                       <span className="text-gary-500 mb-2 mb-md-0">
@@ -562,7 +556,7 @@ function Home() {
 
             <div className="heart-read-more w-100">
               <div className="d-flex justify-content-center">
-                <a href="product_list.html" className="readmore">
+                <a href={`/#/products`} className="readmore">
                   <svg
                     className="me-2"
                     width="16"

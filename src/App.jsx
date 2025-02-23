@@ -1,6 +1,7 @@
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
 import "./assets/all.scss";
+import 'bootstrap/dist/js/bootstrap.min.js';
 import routes from "./routes";
 import Layout from "./Layout";
 
