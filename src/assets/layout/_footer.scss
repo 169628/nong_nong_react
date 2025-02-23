@@ -17,6 +17,7 @@
 .footer {
   line-height: 1.5;
   position: relative;
+
   &::before {
     content: "";
     position: absolute;
@@ -26,12 +27,10 @@
     height: 162px;
     background-color: #966a09;
     //background-repeat: no-repeat;
-    //background-image: url('../assets/images/bg_wave_desktop.png');
+    //background-image: url('../images/bg_wave_desktop.png');
     // 遮罩效果參考:https://w3c.hexschool.com/blog/24db18f8
-    -webkit-mask: url("../assets/images/index/bg_wave_desktop.png") no-repeat
-      center center;
-    mask: url("../assets/images/index/bg_wave_desktop.png") no-repeat center
-      center;
+    -webkit-mask: url("../images/index/bg_wave_desktop.png") no-repeat center center;
+    mask: url("../images/index/bg_wave_desktop.png") no-repeat center center;
     -webkit-mask-size: contain;
     mask-size: contain;
 
@@ -43,10 +42,8 @@
     @media (max-width: 375px) {
       top: -30px;
       height: 52px;
-      -webkit-mask: url("../assets/images/index/bg_wave_mobile.png") no-repeat
-        center center;
-      mask: url("../assets/images/index/bg_wave_mobile.png") no-repeat center
-        center;
+      -webkit-mask: url("../images/index/bg_wave_mobile.png") no-repeat center center;
+      mask: url("../images/index/bg_wave_mobile.png") no-repeat center center;
     }
   }
 
@@ -127,19 +124,19 @@
   z-index: 1000;
 
   @include mobile {
-      bottom: 35%;
-      width: 70px;
-      height: 70px;
-      font-size: 30px;
+    bottom: 35%;
+    width: 70px;
+    height: 70px;
+    font-size: 30px;
   }
 
 
   .page-cart-num {
-      top: 30%;
-      font-size: 13px;
+    top: 30%;
+    font-size: 13px;
 
-      @include mobile {
-          font-size: 10px;
-      }
+    @include mobile {
+      font-size: 10px;
+    }
   }
 }

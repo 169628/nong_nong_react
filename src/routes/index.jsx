@@ -17,6 +17,12 @@ const routes = [
       {
         path: "products",
         element: <Products />,
+        children: [
+          {
+            path: "/products/search/:keywords",
+            element: <Products />
+          }
+        ]
       },
       {
         path: "product/:id",

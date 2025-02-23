@@ -191,6 +191,11 @@
     color: $gary-500;
     border: 1px $gary-500 solid;
   }
+
+  &.current {
+    background-color: $primary-500;
+    color: $white;
+  }
 }
 
 .admin-pagination-dropdown {
