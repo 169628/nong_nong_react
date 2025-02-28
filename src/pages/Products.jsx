@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link, NavLink } from "react-router-dom";
 import axios from "axios";
+
+const categories = ['葉菜類', '根莖瓜果類', '菌菇類', '安心水果類'];
 
 function Products() {
   const [goodsList, setGoodsList] = useState([]);
@@ -8,7 +10,6 @@ function Products() {
   const [curPage, setCurPage] = useState(1);
 
   const { keywords } = useParams();
-  console.log(keywords);
 
   const getProducts = async (page = 1) => {
     let apiUrl = `${import.meta.env.VITE_APP_URL}/products?page=${page}`;
@@ -35,7 +36,7 @@ function Products() {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [keywords]);
 
   return (
     <>
@@ -50,52 +51,30 @@ function Products() {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {`${(keywords != '' && keywords != undefined) ? keywords : '所有商品'}`}
+                {`${(keywords != '' && keywords != undefined && categories.includes(keywords)) ? keywords : '所有商品'}`}
               </button>
               <ul
                 className="dropdown-menu"
                 aria-labelledby="dropdownMenuButton1"
               >
                 <li>
-                  <a
+                  <Link
+                    to={`/products`}
                     className={`dropdown-item${(keywords != '' && keywords != undefined) ? '' : ' active'}`}
-                    href={`/#/products`}
                   >
                     所有商品
-                  </a>
+                  </Link>
                 </li>
-                <li>
-                  <a
-                    className={`dropdown-item ${keywords == '葉菜類' && 'active'}`}
-                    href={`/#/products/search/葉菜類`}
-                  >
-                    葉菜類
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className={`dropdown-item ${keywords == '瓜果根莖類' && 'active'}`}
-                    href={`/#/products/search/瓜果根莖類`}
-                  >
-                    瓜果根莖類
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className={`dropdown-item ${keywords == '菌菇類' && 'active'}`}
-                    href={`/#/products/search/菌菇類`}
-                  >
-                    菌菇類
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className={`dropdown-item ${keywords == '安心水果類' && 'active'}`}
-                    href={`/#/products/search/安心水果類`}
-                  >
-                    安心水果類
-                  </a>
-                </li>
+                {categories.map(category => (
+                  <li key={category}>
+                    <NavLink
+                      to={`/products/search/${category}`}
+                      className="dropdown-item"
+                    >
+                      {category}
+                    </NavLink>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -170,54 +149,57 @@ function Products() {
 
             {/* 頁尾頁碼按鈕 */}
             <div className="mt-20 d-flex justify-content-center mb-30">
-              <ul className="p-0 d-flex justify-content-center align-items-center list-unstyled">
-                {curPage != 1 ? (
-                  <li className="me-3">
-                    <button
-                      className="admin-pagination-btn"
-                      type="button"
-                      onClick={() => hdlPageChange(curPage - 1)}
-                    >
-                      <i className="bi bi-chevron-left"></i>
-                    </button>
-                  </li>
-                ) : (
-                  ""
-                )}
-
-                <li className="mx-3">
-                  {Array.apply(null, { length: goodsCnt / 16 + 1 }).map(
-                    (_, index) => (
+              {(goodsCnt / 16 > 1) ?
+                <ul className="p-0 d-flex justify-content-center align-items-center list-unstyled">
+                  {curPage != 1 ? (
+                    <li className="me-3">
                       <button
-                        className={`${
-                          curPage == index + 1
+                        className="admin-pagination-btn"
+                        type="button"
+                        onClick={() => hdlPageChange(curPage - 1)}
+                      >
+                        <i className="bi bi-chevron-left"></i>
+                      </button>
+                    </li>
+                  ) : (
+                    ""
+                  )}
+
+                  <li className="mx-3">
+                    {Array.apply(null, { length: goodsCnt / 16 + 1 }).map(
+                      (_, index) => (
+                        <button
+                          className={`${curPage == index + 1
                             ? "admin-pagination-btn current"
                             : "admin-pagination-btn"
-                        }`}
-                        type="button"
-                        key={index + 1}
-                        onClick={() => hdlPageChange(index + 1)}
-                      >
-                        {index + 1}
-                      </button>
-                    )
-                  )}
-                </li>
-
-                {goodsCnt / 16 >= 1 && curPage < goodsCnt / 16 + 1 ? (
-                  <li className="ms-3">
-                    <button
-                      className="admin-pagination-btn"
-                      type="button"
-                      onClick={() => hdlPageChange(curPage + 1)}
-                    >
-                      <i className="bi bi-chevron-right"></i>
-                    </button>
+                            }`}
+                          type="button"
+                          key={index + 1}
+                          onClick={() => hdlPageChange(index + 1)}
+                        >
+                          {index + 1}
+                        </button>
+                      )
+                    )}
                   </li>
-                ) : (
-                  ""
-                )}
-              </ul>
+
+                  {goodsCnt / 16 >= 1 && curPage < goodsCnt / 16 + 1 ? (
+                    <li className="ms-3">
+                      <button
+                        className="admin-pagination-btn"
+                        type="button"
+                        onClick={() => hdlPageChange(curPage + 1)}
+                      >
+                        <i className="bi bi-chevron-right"></i>
+                      </button>
+                    </li>
+                  ) : (
+                    ""
+                  )}
+                </ul>
+                : ''
+              }
+
             </div>
           </div>
         </div>

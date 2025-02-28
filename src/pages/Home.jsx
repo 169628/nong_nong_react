@@ -2,13 +2,24 @@ import { useEffect, useState } from "react";
 import { Swiper } from "swiper/bundle";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
+const areas = ['北部', '中部', '南部', '東部'];
+const categories = ['葉菜類', '根莖瓜果類', '菌菇類', '安心水果類'];
 
 function Home() {
   const [newGoods, setNewGoods] = useState([]);
   const [hotGoods, setHotGoods] = useState([]);
   const [heartGoods, setHeartGoods] = useState([]);
+  const [selectedArea, setSelectedArea] = useState(null);
+  const [menuCate, setMenuCate] = useState([]);
 
   const [width, setWidth] = useState(window.innerWidth);
+
+  const handleAreaClick = (area) => {
+    setSelectedArea(area);
+    setMenuCate(categories);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -128,27 +139,27 @@ function Home() {
     });
 
     const swiper = new Swiper(".idx-comment-list", {
-        slidesPerView: 3,
-        spaceBetween: 24,
-        direction: width <= 374 ? 'vertical' : 'horizontal',
-        loop: true,
-        autoplay: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          0: {
-            slidesPerView: 'auto',
-          }
-        },
-        on: {
-          resize: function () {
-            console.log(swiper, width <= 374 ? 'vertical' : 'horizontal');
-            swiper.changeDirection(width <= 374 ? 'vertical' : 'horizontal');
-          },
+      slidesPerView: 3,
+      spaceBetween: 24,
+      direction: width <= 374 ? 'vertical' : 'horizontal',
+      loop: true,
+      autoplay: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 'auto',
         }
-      });
+      },
+      on: {
+        resize: function () {
+          console.log(swiper, width <= 374 ? 'vertical' : 'horizontal');
+          swiper.changeDirection(width <= 374 ? 'vertical' : 'horizontal');
+        },
+      }
+    });
 
     document.querySelector(".search-tag-list").style.display = "none";
 
@@ -215,16 +226,32 @@ function Home() {
             <div className="search-tag-list position-absolute">
               <ul className="list-unstyled search-tags">
                 <li className="search-tag">
-                  <a href={`/#/products/search/有機`}>#有機</a>
+                  <Link
+                    to={`/products/search/有機`}
+                  >
+                    #有機
+                  </Link>
                 </li>
                 <li className="search-tag">
-                  <a href={`/#/products/search/捐贈`}>#捐贈</a>
+                  <Link
+                    to={`/products/search/捐贈`}
+                  >
+                    #捐贈
+                  </Link>
                 </li>
                 <li className="search-tag">
-                  <a href={`/#/products/search/熱門`}>#熱門</a>
+                  <Link
+                    to={`/products/search/熱門`}
+                  >
+                    #熱門
+                  </Link>
                 </li>
                 <li className="search-tag">
-                  <a href={`/#/products/search/最新`}>#最新</a>
+                  <Link
+                    to={`/products/search/最新`}
+                  >
+                    #最新
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -239,54 +266,35 @@ function Home() {
                       所有地區
                     </a>
                   </li>
-                  <li>
-                    <a className="search-item" href="#">
-                      北部
-                    </a>
-                  </li>
-                  <li className="item-current">
-                    <a className="search-item" href="#">
-                      中部
-                    </a>
-                  </li>
-                  <li>
-                    <a className="search-item" href="#">
-                      南部
-                    </a>
-                  </li>
-                  <li>
-                    <a className="search-item" href="#">
-                      東部
-                    </a>
-                  </li>
+
+                  {areas.map(area => (
+                    <li key={area} className={`${selectedArea === area ? 'item-current' : ''}`}>
+                      <a className="search-item" href="#" onClick={(e) => { e.preventDefault(); handleAreaClick(area); }}>
+                        {area}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
                 {/* 選單第二層 */}
                 <ul className="list-unstyled dropdown-menu-lev-two">
                   <li className="mb-6">
-                    <a className="search-item search-item-all" href={`/#/products`}>
+                    <Link
+                      to={`/products`}
+                      className="search-item search-item-all"
+                    >
                       所有種類
-                    </a>
+                    </Link>
                   </li>
-                  <li className="item-current">
-                    <a className="search-item" href={`/#/products/search/葉菜類`}>
-                      葉菜類
-                    </a>
-                  </li>
-                  <li>
-                    <a className="search-item" href={`/#/products/search/根莖瓜果類`}>
-                      根莖瓜果類
-                    </a>
-                  </li>
-                  <li>
-                    <a className="search-item" href={`/#/products/search/菌菇類`}>
-                      菌菇類
-                    </a>
-                  </li>
-                  <li>
-                    <a className="search-item" href={`/#/products/search/安心水果類`}>
-                      安心水果類
-                    </a>
-                  </li>
+                  {menuCate.map(category => (
+                    <li key={category}>
+                      <Link
+                        to={`/products/search/${category}`}
+                        className="search-item"
+                      >
+                        {category}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -307,9 +315,12 @@ function Home() {
                   最新上架
                 </h2>
               </div>
-              <a href={`/#/products`} className="read-more">
+              <Link
+                to={`/products`}
+                className="read-more"
+              >
                 看更多<i className="bi bi-arrow-right ms-2"></i>
-              </a>
+              </Link>
             </div>
 
             <div className="swiper mySwiper">
@@ -320,13 +331,13 @@ function Home() {
                     key={product._id}
                   >
                     <div className="img-box">
-                      <a href={`/#/product/${product._id}`}>
+                      <Link to={`/product/${product._id}`}>
                         <img
                           src="../images/index/product-01.jpg"
                           className="card-img-top goods-pic"
                           alt="..."
                         />
-                      </a>
+                      </Link>
                       {product.tags.productType.length > 0 ? (
                         <div className="tag-cat-list">
                           {product.tags.productType.map((cat, idx) => (
@@ -352,9 +363,10 @@ function Home() {
                     </div>
 
                     <div className="card-body">
-                      <a href={`/#/product/${product._id}`}>
+                      <Link to={`/product/${product._id}`}>
                         <h3 className="card-title mb-1">{product.name}</h3>
-                      </a>
+                      </Link>
+
                       <span className="text-gary-500 mb-2">{product.unit}</span>
 
                       <div className="d-flex flex-column flex-md-row justify-content-md-between">
@@ -395,9 +407,12 @@ function Home() {
                   熱門商品
                 </h2>
               </div>
-              <a href={`/#/products`} className="read-more">
+              <Link
+                to={`/products`}
+                className="read-more"
+              >
                 看更多<i className="bi bi-arrow-right ms-2"></i>
-              </a>
+              </Link>
             </div>
 
             <div className="swiper hotSwiper">
@@ -408,13 +423,13 @@ function Home() {
                     key={product._id}
                   >
                     <div className="img-box">
-                      <a href={`/#/product/${product._id}`}>
+                      <Link to={`/product/${product._id}`}>
                         <img
                           src="../images/index/product-01.jpg"
                           className="card-img-top goods-pic"
                           alt="..."
                         />
-                      </a>
+                      </Link>
                       {product.tags.productType.length > 0 ? (
                         <div className="tag-cat-list">
                           {product.tags.productType.map((cat, idx) => (
@@ -440,9 +455,9 @@ function Home() {
                     </div>
 
                     <div className="card-body">
-                      <a href={`/#/product/${product._id}`}>
+                      <Link to={`/product/${product._id}`}>
                         <h3 className="card-title mb-1">{product.name}</h3>
-                      </a>
+                      </Link>
                       <span className="text-gary-500 mb-2">{product.unit}</span>
 
                       <div className="d-flex flex-column flex-md-row justify-content-md-between">
@@ -494,13 +509,13 @@ function Home() {
                     key={product._id}
                   >
                     <div className="img-box">
-                      <a href={`/#/product/${product._id}`}>
+                      <Link to={`/product/${product._id}`}>
                         <img
                           src="../images/index/product-03.jpg"
                           className="card-img-top goods-pic"
                           alt="..."
                         />
-                      </a>
+                      </Link>
                       {product.tags.productType.length > 0 ? (
                         <div className="tag-cat-list">
                           {product.tags.productType.map((cat, idx) => (
@@ -525,9 +540,9 @@ function Home() {
                       )}
                     </div>
                     <div className="card-body">
-                      <a href={`/#/product/${product._id}`}>
+                      <Link to={`/product/${product._id}`}>
                         <h3 className="card-title mb-1">{product.name}</h3>
-                      </a>
+                      </Link>
                       <span className="text-gary-500 mb-2 mb-md-0">
                         {product.unit}
                       </span>
@@ -556,7 +571,10 @@ function Home() {
 
             <div className="heart-read-more w-100">
               <div className="d-flex justify-content-center">
-                <a href={`/#/products`} className="readmore">
+                <Link
+                  to={`/products`}
+                  className="readmore"
+                >
                   <svg
                     className="me-2"
                     width="16"
@@ -568,7 +586,7 @@ function Home() {
                     <path d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9l0 176c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z" />
                   </svg>
                   <span>看更多產品</span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -870,82 +888,82 @@ function Home() {
       </div>
 
       <div className="idx-about">
-      <div className="container">
-        <div className="idx-about-title d-flex justify-content-center mb-md-13 mb-6">
-          <div className="idx-cat-name d-flex">
-            <img src="../images/icon/patten_left.png" className="me-10 me-md-13" />
-            <h2 className="text-secondary-700 fs-4 me-10 me-md-13">關於我們</h2>
-            <img src="../images/icon/patten_right.png" className="me-1" />
-          </div>
-        </div>
-        <div className="text-center idx-about-brief text-gary-500">
-          <p className="mb-1">希望能為在台灣偏鄉地區的人或是當地農民出一份心力</p>
-          <p>讓他們即使無法住在機會很多的都市，也能夠生存下去</p>
-        </div>
-        <div className="idx-about-list">
-          <div className="idx-about-item-group mb-10">
-            <div className="idx-about-item" data-aos="flip-left">
-              <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
-              <div className="w-100 data">
-                <div className="d-flex name-social">
-                  <h3 className="fw-500 name">Pipi</h3>
-                  <div className="ms-auto social">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F"/>
-                    </svg>
-                  </div>
-                </div>
-                <span className="text-gary-500 job">全端工程師</span>
-              </div>
-            </div>
-            <div className="idx-about-item" data-aos="flip-right" data-aos-delay="50">
-              <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
-              <div className="w-100 data">
-                <div className="d-flex name-social">
-                  <h3 className="fw-500 name">Abu</h3>
-                  <div className="ms-auto social">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F"/>
-                    </svg>
-                  </div>
-                </div>
-                <span className="text-gary-500 job">全端工程師</span>
-              </div>
+        <div className="container">
+          <div className="idx-about-title d-flex justify-content-center mb-md-13 mb-6">
+            <div className="idx-cat-name d-flex">
+              <img src="../images/icon/patten_left.png" className="me-10 me-md-13" />
+              <h2 className="text-secondary-700 fs-4 me-10 me-md-13">關於我們</h2>
+              <img src="../images/icon/patten_right.png" className="me-1" />
             </div>
           </div>
-          <div className="idx-about-item-group justify-content-end">
-            <div className="idx-about-item" data-aos="flip-up" data-aos-delay="100">
-              <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
-              <div className="w-100 data">
-                <div className="d-flex name-social">
-                  <h3 className="fw-500 name">Sandy</h3>
-                  <div className="ms-auto social">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F"/>
-                    </svg>
+          <div className="text-center idx-about-brief text-gary-500">
+            <p className="mb-1">希望能為在台灣偏鄉地區的人或是當地農民出一份心力</p>
+            <p>讓他們即使無法住在機會很多的都市，也能夠生存下去</p>
+          </div>
+          <div className="idx-about-list">
+            <div className="idx-about-item-group mb-10">
+              <div className="idx-about-item" data-aos="flip-left">
+                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                <div className="w-100 data">
+                  <div className="d-flex name-social">
+                    <h3 className="fw-500 name">Pipi</h3>
+                    <div className="ms-auto social">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
+                      </svg>
+                    </div>
                   </div>
+                  <span className="text-gary-500 job">全端工程師</span>
                 </div>
-                <span className="text-gary-500 job">全端工程師</span>
+              </div>
+              <div className="idx-about-item" data-aos="flip-right" data-aos-delay="50">
+                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                <div className="w-100 data">
+                  <div className="d-flex name-social">
+                    <h3 className="fw-500 name">Abu</h3>
+                    <div className="ms-auto social">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
+                      </svg>
+                    </div>
+                  </div>
+                  <span className="text-gary-500 job">全端工程師</span>
+                </div>
               </div>
             </div>
-            <div className="idx-about-item" data-aos="flip-down" data-aos-delay="150">
-              <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
-              <div className="w-100 data">
-                <div className="d-flex name-social">
-                  <h3 className="fw-500 name">Edward</h3>
-                  <div className="ms-auto social">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F"/>
-                    </svg>
+            <div className="idx-about-item-group justify-content-end">
+              <div className="idx-about-item" data-aos="flip-up" data-aos-delay="100">
+                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                <div className="w-100 data">
+                  <div className="d-flex name-social">
+                    <h3 className="fw-500 name">Sandy</h3>
+                    <div className="ms-auto social">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
+                      </svg>
+                    </div>
                   </div>
+                  <span className="text-gary-500 job">全端工程師</span>
                 </div>
-                <span className="text-gary-500 job">全端工程師</span>
+              </div>
+              <div className="idx-about-item" data-aos="flip-down" data-aos-delay="150">
+                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                <div className="w-100 data">
+                  <div className="d-flex name-social">
+                    <h3 className="fw-500 name">Edward</h3>
+                    <div className="ms-auto social">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
+                      </svg>
+                    </div>
+                  </div>
+                  <span className="text-gary-500 job">全端工程師</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
