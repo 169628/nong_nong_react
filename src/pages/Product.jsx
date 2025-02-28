@@ -1,17 +1,29 @@
-import { Swiper, SwiperSlide } from "swiper/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import RiseLoader from "react-spinners/RiseLoader";
+import StockModal from "../components/oneProduct/stockModal";
+import { toast } from "react-toastify";
 
-import "swiper/css";
+import { Toast } from "../components/common/Toast";
+
+import { Swiper } from "swiper/bundle";
+import "swiper/swiper-bundle.css";
 
 function Product() {
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [num, setNum] = useState(1);
+  const user = {
+    id: "6776a26276e2f6e0ea3a680f",
+    token:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NzZhMjYyNzZlMmY2ZTBlYTNhNjgwZiIsIm5hbWUiOiLnvqnlpKfliKnpu5HmiYvpu6giLCJpYXQiOjE3NDA3MDg5NzMsImV4cCI6MTc0MTMxMzc3M30.JlbMypKCTpNIDE08wA81Avu-1FiCIrktzHWWL3Mrr1w",
+  };
+
+  const [width, setWidth] = useState(window.innerWidth);
 
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   const getProduct = async () => {
@@ -21,7 +33,7 @@ function Product() {
         `${import.meta.env.VITE_APP_URL}/products/one/${id}`
       );
       const success = result.data?.result;
-      if (success) {
+      if (success == 1) {
         setProduct(result.data.data[0]);
       } else {
         navigate("/page404");
@@ -33,8 +45,66 @@ function Product() {
     }
   };
 
+  const addToCart = async () => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+      const result = await axios.put(
+        `${import.meta.env.VITE_APP_URL}/carts/${user.id}`,
+        {
+          productId: id,
+          quantity: num,
+        }
+      );
+
+      if (result.data.result == 1) {
+        toast.success(`${product.name} x ${num} 已成功加入購物車`);
+        setNum(1);
+      }
+    } catch (error) {
+      toast.error("加入購物車失敗");
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getProduct();
+  }, []);
+
+  const handleModal = () => {
+    setShow(true);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const swiper = new Swiper(".idx-comment-list", {
+      slidesPerView: 3,
+      spaceBetween: 24,
+      direction: width <= 374 ? "vertical" : "horizontal",
+      loop: true,
+      autoplay: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: "auto",
+        },
+      },
+      on: {
+        resize: function () {
+          console.log(swiper, width <= 374 ? "vertical" : "horizontal");
+          swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
+        },
+      },
+    });
   }, []);
 
   return (
@@ -48,6 +118,7 @@ function Product() {
         </div>
       ) : (
         <div>
+          <Toast />
           <div className="container mt-16 mt-md-36">
             <p className="text-gary-500">{`${product.area} / ${product.category} / ${product.name}`}</p>
             <div className="row">
@@ -79,21 +150,35 @@ function Product() {
                     <ul className="list-unstyled d-flex flex-column gap-10">
                       <li className="py-2">{product.area}</li>
                       <li className="py-2">
-                        {product.tags?.keywords?.includes("冷藏") && "冷藏"}
+                        {product.tags?.keywords?.includes("冷藏")
+                          ? "冷藏"
+                          : "一般"}
                       </li>
                       <li className="py-2">{product.unit}</li>
                       <li>
                         <div className="btn_quantity">
-                          <button type="button" className="btn">
+                          <button
+                            type="button"
+                            className={`btn ${num == 1 ? "disabled" : ""}`}
+                            onClick={() => {
+                              setNum(num - 1);
+                            }}
+                          >
                             <img src="/images/icon/decrease.svg" alt="-" />
                           </button>
                           <input
                             type="text"
                             name="quantity"
-                            defaultValue="1"
+                            value={num}
                             readOnly
                           />
-                          <button type="button" className="btn">
+                          <button
+                            type="button"
+                            className="btn"
+                            onClick={() => {
+                              setNum(num + 1);
+                            }}
+                          >
                             <img src="/images/icon/increase.svg" alt="+" />
                           </button>
                         </div>
@@ -107,6 +192,7 @@ function Product() {
                       <button
                         type="button"
                         className="btn btn-secondary100 fs-5"
+                        onClick={handleModal}
                       >
                         <img src="/images/icon/box.svg" alt="box" />
                         查詢庫存
@@ -116,6 +202,7 @@ function Product() {
                       <button
                         type="button"
                         className="btn btn-secondary700 fs-5"
+                        onClick={addToCart}
                       >
                         <img
                           src="/images/icon/cart-secondary100.svg"
@@ -136,29 +223,10 @@ function Product() {
             </div>
           </div>
 
-          <div className="container jump-tag">
-            <div className="list-group d-flex flex-row">
-              <a
-                className="list-group-item list-group-item-action fs-5"
-                href="#productIntroduce"
-              >
-                商品介紹
-              </a>
-              <a
-                className="list-group-item list-group-item-action fs-5"
-                href="#productComment"
-              >
-                商品評論
-              </a>
-              <a
-                className="list-group-item list-group-item-action fs-5"
-                href="#shoppingInstructions"
-              >
-                購物須知
-              </a>
-            </div>
-          </div>
+          {/* tab */}
+          <div className="container jump-tag"></div>
 
+          {/* 商品介紹 */}
           <section className="container introduce mb-26">
             <div className="title mb-17 d-flex justify-content-center">
               <img src="/images/icon/small-leaf.svg" alt="small-leaf" />
@@ -243,6 +311,8 @@ function Product() {
               </ul>
             </div>
           </section>
+
+          {/* 捐贈區 */}
           {product.tags?.productType?.includes("捐贈") && (
             <section className="donate my-26 text-white">
               <div className="container">
@@ -315,6 +385,8 @@ function Product() {
               </div>
             </section>
           )}
+
+          {/* 小農簡介 */}
           <section className="farm mb-26">
             <div className="container">
               <div className="farm-picture position-relative">
@@ -357,6 +429,7 @@ function Product() {
             </div>
           </section>
 
+          {/* swiper 評論區 */}
           <section className="comment py-26 mb-26">
             <div className="container">
               <div className="title mb-17 d-flex justify-content-center">
@@ -373,158 +446,305 @@ function Product() {
                   alt="rice-ears"
                 />
               </div>
-              <Swiper
-                className="swiper idx-comment-list mb-17"
-                spaceBetween={50}
-                slidesPerView={3}
-                onSwiper={(swiper) => console.log(swiper)}
-              >
-                {/* <div className="swiper-wrapper"> */}
-                <SwiperSlide
-                  className="swiper-slide idx-comment-item"
-                  style={{ height: "auto" }}
-                >
-                  <div className="row g-0">
-                    <div className="card-header">
-                      <img
-                        src="/images/index/avatar_default.png"
-                        alt="*"
-                        className="rounded-circle object-fit-cover author-img"
-                        width="60px"
-                        height="60px"
-                      />
-                      <div className="name-rank">
-                        <span className="fullname">Andrew</span>
-                        <div className="rank-star">
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
+              <div className="swiper idx-comment-list">
+                <div className="swiper-wrapper">
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">林依依</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        新鮮清脆，能品嚐到自然的陽光與大地，非常滿意。
-                      </p>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide
-                  className="swiper-slide idx-comment-item"
-                  style={{ height: "auto" }}
-                >
-                  <div className="row g-0">
-                    <div className="card-header">
-                      <img
-                        src="/images/index/avatar_default.png"
-                        alt="*"
-                        className="rounded-circle object-fit-cover author-img"
-                        width="60px"
-                        height="60px"
-                      />
-                      <div className="name-rank">
-                        <span className="fullname">張小姐</span>
-                        <div className="rank-star">
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                        </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          好感謝有這個平台，讓我隨時都能補貨，還能快速就近拿到～
+                        </p>
                       </div>
                     </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        口感不錯，但甜度稍微不足，整體來說還可以，但沒有特別驚豔。
-                      </p>
-                    </div>
                   </div>
-                </SwiperSlide>
-                <SwiperSlide
-                  className="swiper-slide idx-comment-item"
-                  style={{ height: "auto" }}
-                >
-                  <div className="row g-0">
-                    <div className="card-header">
-                      <img
-                        src="/images/index/avatar_default.png"
-                        alt="*"
-                        className="rounded-circle object-fit-cover author-img"
-                        width="60px"
-                        height="60px"
-                      />
-                      <div className="name-rank">
-                        <span className="fullname">花媽</span>
-                        <div className="rank-star">
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
-                          <img
-                            src="/images/icon/star-yellow.svg"
-                            className="star"
-                          />
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">埔里餐間有機</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="card-body">
-                      <p className="card-text">
-                        我家小孩最挑嘴了，但這次的芭樂他們都吃得很開心，還搶著要再吃。真心推薦給所有媽媽們！
-                      </p>
+                      <div className="card-body">
+                        <p className="card-text">
+                          純天然，美味與愛心同在；從田間到心間，每筆交易都有善意！！
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </SwiperSlide>
-                {/* </div> */}
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">Mike</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          這個平台真是讚，每購一單就能支持一份愛心，大家可以一同響應
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">王曉明</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          還不錯，蠻方便的，購買的柚子也還不錯，就是有少數幾顆太酸了
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">冰鄉在你家</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          謝謝這個平台給予我們一個管道可以售賣自家的農產品~
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">李大大</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          勉強還算可以啦，但這個速度有點慢..
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">林如意</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          可以一起共襄盛舉發心的傳遞自己的心意，真的要推廣一下此平台
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div className="swiper-button-next swiper-btn-white"></div>
                 <div className="swiper-button-prev swiper-btn-white"></div>
-              </Swiper>
+              </div>
             </div>
           </section>
 
+          {/* 購物須知 */}
           <section className="container instructions">
             <div className="title mb-17 d-flex justify-content-center">
               <img src="/images/icon/hat.svg" alt="hat" />
@@ -580,6 +800,7 @@ function Product() {
               </ol>
             </div>
           </section>
+          <StockModal show={show} setShow={setShow} product={product} />
         </div>
       )}
     </>
