@@ -64,7 +64,7 @@ function OffCanvas() {
       setShowLogin(true);
       reset();
     } else {
-      toast.error("此 Email 已經註冊！");
+      toast.error("此Email 已經註冊！");
     }
   };
 

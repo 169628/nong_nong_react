@@ -21,11 +21,9 @@ function Header() {
     e.preventDefault();
     if (!isAuthenticated) {
       console.log("not logged in.");
-      // If not logged in, navigate to the login page
     } else {
       console.log("Already logged in.");
       navigate("/");
-      // Perform any other action when user is logged in
     }
   };
 
