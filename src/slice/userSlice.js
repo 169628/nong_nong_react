@@ -72,7 +72,6 @@ export const loginUser = (email, password) => async (dispatch) => {
     if (res.data.result === 1) {
       const { user, userId, token } = res.data.data;
       //console.log(res.data.data);
-      //localStorage.setItem('token', token);
       dispatch(loginSuccess({ userName: user, userId, token }));
     } else {
       console.error("Login failed:", res.data.message);
@@ -84,7 +83,7 @@ export const loginUser = (email, password) => async (dispatch) => {
   }
 };
 
-// Async thunk for registration
+// Async thunk for registrations
 export const registerUser = (email, password, name) => async (dispatch) => {
   dispatch(registerStart());
   try {

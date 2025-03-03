@@ -16,16 +16,14 @@ function Header() {
     dispatch(checkAuthStatusAsync()); // Dispatch action to check authentication status
   }, [dispatch]);
 
-  // Handle logo click event
+  // Handle logo click events
   const handleLogoClick = (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
       console.log("not logged in.");
-      // If not logged in, navigate to the login page
     } else {
       console.log("Already logged in.");
       navigate("/");
-      // Perform any other action when user is logged in
     }
   };
 

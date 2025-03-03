@@ -42,7 +42,7 @@ function OffCanvas() {
       toast.error(error);
     } else if (isAuthenticated) {
       toast.success("登入成功！");
-      setShowLogin(false); // Close login modal after successful login
+      setShowLogin(false); // Close login modal after successful logins
     }
   }, [userName, isAuthenticated, error, loading]);
 
@@ -64,7 +64,7 @@ function OffCanvas() {
       setShowLogin(true);
       reset();
     } else {
-      toast.error("此 Email 已經註冊！");
+      toast.error("此Email 已經註冊！");
     }
   };
 
