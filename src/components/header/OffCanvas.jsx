@@ -42,7 +42,7 @@ function OffCanvas() {
       toast.error(error);
     } else if (isAuthenticated) {
       toast.success("登入成功！");
-      setShowLogin(false); // Close login modal after successful login
+      setShowLogin(false); // Close login modal after successful logins
     }
   }, [userName, isAuthenticated, error, loading]);
 

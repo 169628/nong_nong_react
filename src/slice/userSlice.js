@@ -83,7 +83,7 @@ export const loginUser = (email, password) => async (dispatch) => {
   }
 };
 
-// Async thunk for registration
+// Async thunk for registrations
 export const registerUser = (email, password, name) => async (dispatch) => {
   dispatch(registerStart());
   try {

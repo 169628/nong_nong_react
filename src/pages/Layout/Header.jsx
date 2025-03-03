@@ -16,7 +16,7 @@ function Header() {
     dispatch(checkAuthStatusAsync()); // Dispatch action to check authentication status
   }, [dispatch]);
 
-  // Handle logo click event
+  // Handle logo click events
   const handleLogoClick = (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
