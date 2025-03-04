@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { Swiper } from "swiper/bundle";
 import "swiper/swiper-bundle.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import RiseLoader from "react-spinners/RiseLoader";
 
-const areas = ['北部', '中部', '南部', '東部'];
-const categories = ['葉菜類', '根莖瓜果類', '菌菇類', '安心水果類'];
+import { Modal } from 'react-bootstrap';
+
+const areas = ["北部", "中部", "南部", "東部"];
+const categories = ["葉菜類", "根莖瓜果類", "菌菇類", "安心水果類"];
 
 function Home() {
   const [newGoods, setNewGoods] = useState([]);
@@ -14,7 +17,23 @@ function Home() {
   const [selectedArea, setSelectedArea] = useState(null);
   const [menuCate, setMenuCate] = useState([]);
 
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  const [newLoading, setNewLoading] = useState(false);
+  const [hotLoading, setHotLoading] = useState(false);
+  const [heartLoading, setHeartLoading] = useState(false);
+
   const [width, setWidth] = useState(window.innerWidth);
+
+  const [showModal, setShowModal] = useState(true);
+
+  const handleClose = () => setShowModal(false);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/products/search/${query}`);
+  };
 
   const handleAreaClick = (area) => {
     setSelectedArea(area);
@@ -31,30 +50,36 @@ function Home() {
 
   const getNewProducts = async () => {
     try {
+      setNewLoading(true);
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=最新上架`
       );
       setNewGoods(result.data.data[0].results);
+      setNewLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
   const getHotProducts = async () => {
     try {
+      setHotLoading(true);
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=熱門商品`
       );
       setHotGoods(result.data.data[0].results);
+      setHotLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
   const getHeartProducts = async () => {
     try {
+      setHeartLoading(true);
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=捐贈`
       );
       setHeartGoods(result.data.data[0].results);
+      setHeartLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -73,6 +98,37 @@ function Home() {
       },
     });
 
+    const swiper = new Swiper(".idx-comment-list", {
+      slidesPerView: 3,
+      spaceBetween: 24,
+      direction: width <= 374 ? "vertical" : "horizontal",
+      loop: true,
+      autoplay: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: "auto",
+        },
+      },
+      on: {
+        resize: function () {
+          console.log(swiper, width <= 374 ? "vertical" : "horizontal");
+          swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
+        },
+      },
+    });
+
+    document.querySelector(".search-tag-list").style.display = "none";
+
+    getNewProducts();
+    getHotProducts();
+    getHeartProducts();
+  }, []);
+
+  useEffect(() => {
     new Swiper(".mySwiper", {
       slidesPerView: 4,
       spaceBetween: 24,
@@ -95,7 +151,9 @@ function Home() {
         },
       },
     });
+  }, [newLoading]);
 
+  useEffect(() => {
     new Swiper(".hotSwiper", {
       slidesPerView: 4,
       spaceBetween: 24,
@@ -118,10 +176,15 @@ function Home() {
         },
       },
     });
+  }, [hotLoading]);
 
+  useEffect(() => {
     new Swiper(".idx-heart-swiper", {
       slidesPerView: 2,
       spaceBetween: 6,
+      autoplay: {
+        delay: 2500, //N秒切换一次
+      },
       navigation: {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
@@ -137,36 +200,7 @@ function Home() {
         },
       },
     });
-
-    const swiper = new Swiper(".idx-comment-list", {
-      slidesPerView: 3,
-      spaceBetween: 24,
-      direction: width <= 374 ? 'vertical' : 'horizontal',
-      loop: true,
-      autoplay: true,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 'auto',
-        }
-      },
-      on: {
-        resize: function () {
-          console.log(swiper, width <= 374 ? 'vertical' : 'horizontal');
-          swiper.changeDirection(width <= 374 ? 'vertical' : 'horizontal');
-        },
-      }
-    });
-
-    document.querySelector(".search-tag-list").style.display = "none";
-
-    getNewProducts();
-    getHotProducts();
-    getHeartProducts();
-  }, []);
+  }, [heartLoading]);
 
   // 控制點擊搜尋框顯示搜尋標籤
   const openSearch = () => {
@@ -214,11 +248,14 @@ function Home() {
               data-bs-toggle="dropdown"
               data-bs-auto-close="outside"
               aria-expanded="false"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               onClick={openSearch}
             />
             <a
               className="position-absolute end-0 me-11 text-primary-300"
               href="#"
+              onClick={handleSearch}
             >
               <i className="bi bi-search"></i>
             </a>
@@ -226,32 +263,16 @@ function Home() {
             <div className="search-tag-list position-absolute">
               <ul className="list-unstyled search-tags">
                 <li className="search-tag">
-                  <Link
-                    to={`/products/search/有機`}
-                  >
-                    #有機
-                  </Link>
+                  <Link to={`/products/search/有機`}>#有機</Link>
                 </li>
                 <li className="search-tag">
-                  <Link
-                    to={`/products/search/捐贈`}
-                  >
-                    #捐贈
-                  </Link>
+                  <Link to={`/products/search/捐贈`}>#捐贈</Link>
                 </li>
                 <li className="search-tag">
-                  <Link
-                    to={`/products/search/熱門`}
-                  >
-                    #熱門
-                  </Link>
+                  <Link to={`/products/search/熱門`}>#熱門</Link>
                 </li>
                 <li className="search-tag">
-                  <Link
-                    to={`/products/search/最新`}
-                  >
-                    #最新
-                  </Link>
+                  <Link to={`/products/search/最新`}>#最新</Link>
                 </li>
               </ul>
             </div>
@@ -267,9 +288,21 @@ function Home() {
                     </a>
                   </li>
 
-                  {areas.map(area => (
-                    <li key={area} className={`${selectedArea === area ? 'item-current' : ''}`}>
-                      <a className="search-item" href="#" onClick={(e) => { e.preventDefault(); handleAreaClick(area); }}>
+                  {areas.map((area) => (
+                    <li
+                      key={area}
+                      className={`${
+                        selectedArea === area ? "item-current" : ""
+                      }`}
+                    >
+                      <a
+                        className="search-item"
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleAreaClick(area);
+                        }}
+                      >
                         {area}
                       </a>
                     </li>
@@ -285,7 +318,7 @@ function Home() {
                       所有種類
                     </Link>
                   </li>
-                  {menuCate.map(category => (
+                  {menuCate.map((category) => (
                     <li key={category}>
                       <Link
                         to={`/products/search/${category}`}
@@ -315,85 +348,93 @@ function Home() {
                   最新上架
                 </h2>
               </div>
-              <Link
-                to={`/products`}
-                className="read-more"
-              >
+              <Link to={`/products`} className="read-more">
                 看更多<i className="bi bi-arrow-right ms-2"></i>
               </Link>
             </div>
 
-            <div className="swiper mySwiper">
-              <div className="swiper-wrapper">
-                {newGoods.map((product) => (
-                  <div
-                    className="swiper-slide idx-goods-item"
-                    key={product._id}
-                  >
-                    <div className="img-box">
-                      <Link to={`/product/${product._id}`}>
-                        <img
-                          src="../images/index/product-01.jpg"
-                          className="card-img-top goods-pic"
-                          alt="..."
-                        />
-                      </Link>
-                      {product.tags.productType.length > 0 ? (
-                        <div className="tag-cat-list">
-                          {product.tags.productType.map((cat, idx) => (
-                            <span className="product-cat-tag" key={idx}>
-                              {cat}
+            {newLoading ? (
+              <div
+                className="container d-flex justify-content-center align-items-center"
+                style={{ height: "60vh" }}
+              >
+                <RiseLoader color="#966A09" size={30} />
+              </div>
+            ) : (
+              <div className="swiper mySwiper">
+                <div className="swiper-wrapper">
+                  {newGoods.map((product) => (
+                    <div
+                      className="swiper-slide idx-goods-item"
+                      key={product._id}
+                    >
+                      <div className="img-box">
+                        <Link to={`/product/${product._id}`}>
+                          <img
+                            src="../images/index/product-01.jpg"
+                            className="card-img-top goods-pic"
+                            alt="..."
+                          />
+                        </Link>
+                        {product.tags.productType.length > 0 ? (
+                          <div className="tag-cat-list">
+                            {product.tags.productType.map((cat, idx) => (
+                              <span className="product-cat-tag" key={idx}>
+                                {cat}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {product.tags.keywords.length > 0 ? (
+                          <div className="tag-list">
+                            {product.tags.keywords.map((tag, idx) => (
+                              <span className="product-tag" key={idx}>
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+
+                      <div className="card-body">
+                        <Link to={`/product/${product._id}`}>
+                          <h3 className="card-title mb-1">{product.name}</h3>
+                        </Link>
+
+                        <span className="text-gary-500 mb-2">
+                          {product.unit}
+                        </span>
+
+                        <div className="d-flex flex-column flex-md-row justify-content-md-between">
+                          <div className="goods-price mb-2 mb-md-0">
+                            <span className="text-primary-500 fw-bold fs-6 fs-md-4 me-4">
+                              NT.{product.price}
                             </span>
-                          ))}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {product.tags.keywords.length > 0 ? (
-                        <div className="tag-list">
-                          {product.tags.keywords.map((tag, idx) => (
-                            <span className="product-tag" key={idx}>
-                              {tag}
+                            <span className="old-price text-gary-500">
+                              <del>NT.{product.originalPrice}</del>
                             </span>
-                          ))}
+                          </div>
+                          <a href="#" className="buy-btn buy-btn-primary">
+                            <i className="bi bi-cart3"></i>
+                            <span className="ms-2 d-md-none">加入購物車</span>
+                          </a>
                         </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-
-                    <div className="card-body">
-                      <Link to={`/product/${product._id}`}>
-                        <h3 className="card-title mb-1">{product.name}</h3>
-                      </Link>
-
-                      <span className="text-gary-500 mb-2">{product.unit}</span>
-
-                      <div className="d-flex flex-column flex-md-row justify-content-md-between">
-                        <div className="goods-price mb-2 mb-md-0">
-                          <span className="text-primary-500 fw-bold fs-6 fs-md-4 me-4">
-                            NT.{product.price}
-                          </span>
-                          <span className="old-price text-gary-500">
-                            <del>NT.{product.originalPrice}</del>
-                          </span>
-                        </div>
-                        <a href="#" className="buy-btn buy-btn-primary">
-                          <i className="bi bi-cart3"></i>
-                          <span className="ms-2 d-md-none">加入購物車</span>
-                        </a>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
+                </div>
+                <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
+                </div>
               </div>
-              <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
-                <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
-              </div>
-              <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
-                <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
-              </div>
-            </div>
+            )}
           </div>
 
           <div className="idx-product-list">
@@ -407,84 +448,92 @@ function Home() {
                   熱門商品
                 </h2>
               </div>
-              <Link
-                to={`/products`}
-                className="read-more"
-              >
+              <Link to={`/products`} className="read-more">
                 看更多<i className="bi bi-arrow-right ms-2"></i>
               </Link>
             </div>
 
-            <div className="swiper hotSwiper">
-              <div className="swiper-wrapper">
-                {hotGoods.map((product) => (
-                  <div
-                    className="swiper-slide idx-goods-item"
-                    key={product._id}
-                  >
-                    <div className="img-box">
-                      <Link to={`/product/${product._id}`}>
-                        <img
-                          src="../images/index/product-01.jpg"
-                          className="card-img-top goods-pic"
-                          alt="..."
-                        />
-                      </Link>
-                      {product.tags.productType.length > 0 ? (
-                        <div className="tag-cat-list">
-                          {product.tags.productType.map((cat, idx) => (
-                            <span className="product-cat-tag" key={idx}>
-                              {cat}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {product.tags.keywords.length > 0 ? (
-                        <div className="tag-list">
-                          {product.tags.keywords.map((tag, idx) => (
-                            <span className="product-tag" key={idx}>
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
+            {hotLoading ? (
+              <div
+                className="container d-flex justify-content-center align-items-center"
+                style={{ height: "60vh" }}
+              >
+                <RiseLoader color="#966A09" size={30} />
+              </div>
+            ) : (
+              <div className="swiper hotSwiper">
+                <div className="swiper-wrapper">
+                  {hotGoods.map((product) => (
+                    <div
+                      className="swiper-slide idx-goods-item"
+                      key={product._id}
+                    >
+                      <div className="img-box">
+                        <Link to={`/product/${product._id}`}>
+                          <img
+                            src="../images/index/product-01.jpg"
+                            className="card-img-top goods-pic"
+                            alt="..."
+                          />
+                        </Link>
+                        {product.tags.productType.length > 0 ? (
+                          <div className="tag-cat-list">
+                            {product.tags.productType.map((cat, idx) => (
+                              <span className="product-cat-tag" key={idx}>
+                                {cat}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {product.tags.keywords.length > 0 ? (
+                          <div className="tag-list">
+                            {product.tags.keywords.map((tag, idx) => (
+                              <span className="product-tag" key={idx}>
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
 
-                    <div className="card-body">
-                      <Link to={`/product/${product._id}`}>
-                        <h3 className="card-title mb-1">{product.name}</h3>
-                      </Link>
-                      <span className="text-gary-500 mb-2">{product.unit}</span>
+                      <div className="card-body">
+                        <Link to={`/product/${product._id}`}>
+                          <h3 className="card-title mb-1">{product.name}</h3>
+                        </Link>
+                        <span className="text-gary-500 mb-2">
+                          {product.unit}
+                        </span>
 
-                      <div className="d-flex flex-column flex-md-row justify-content-md-between">
-                        <div className="goods-price mb-2 mb-md-0">
-                          <span className="text-primary-500 fw-bold fs-6 fs-md-4 me-4">
-                            NT.{product.price}
-                          </span>
-                          <span className="old-price text-gary-500">
-                            <del>NT.{product.originalPrice}</del>
-                          </span>
+                        <div className="d-flex flex-column flex-md-row justify-content-md-between">
+                          <div className="goods-price mb-2 mb-md-0">
+                            <span className="text-primary-500 fw-bold fs-6 fs-md-4 me-4">
+                              NT.{product.price}
+                            </span>
+                            <span className="old-price text-gary-500">
+                              <del>NT.{product.originalPrice}</del>
+                            </span>
+                          </div>
+                          <a href="#" className="buy-btn buy-btn-primary">
+                            <i className="bi bi-cart3"></i>
+                            <span className="ms-2 d-md-none">加入購物車</span>
+                          </a>
                         </div>
-                        <a href="#" className="buy-btn buy-btn-primary">
-                          <i className="bi bi-cart3"></i>
-                          <span className="ms-2 d-md-none">加入購物車</span>
-                        </a>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
+                </div>
+                <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
+                </div>
               </div>
-              <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
-                <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
-              </div>
-              <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
-                <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
-              </div>
-            </div>
+            )}
           </div>
 
           <div className="idx-heart-list">
@@ -501,80 +550,86 @@ function Home() {
               </div>
             </div>
 
-            <div className="swiper idx-heart-swiper">
-              <div className="swiper-wrapper">
-                {heartGoods.map((product) => (
-                  <div
-                    className="swiper-slide idx-goods-item"
-                    key={product._id}
-                  >
-                    <div className="img-box">
-                      <Link to={`/product/${product._id}`}>
-                        <img
-                          src="../images/index/product-03.jpg"
-                          className="card-img-top goods-pic"
-                          alt="..."
-                        />
-                      </Link>
-                      {product.tags.productType.length > 0 ? (
-                        <div className="tag-cat-list">
-                          {product.tags.productType.map((cat, idx) => (
-                            <span className="product-cat-tag" key={idx}>
-                              {cat}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {product.tags.keywords.length > 0 ? (
-                        <div className="tag-list">
-                          {product.tags.keywords.map((tag, idx) => (
-                            <span className="product-tag" key={idx}>
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <div className="card-body">
-                      <Link to={`/product/${product._id}`}>
-                        <h3 className="card-title mb-1">{product.name}</h3>
-                      </Link>
-                      <span className="text-gary-500 mb-2 mb-md-0">
-                        {product.unit}
-                      </span>
+            {heartLoading ? (
+              <div
+                className="container d-flex justify-content-center align-items-center"
+                style={{ height: "60vh" }}
+              >
+                <RiseLoader color="#966A09" size={30} />
+              </div>
+            ) : (
+              <div className="swiper idx-heart-swiper">
+                <div className="swiper-wrapper">
+                  {heartGoods.map((product) => (
+                    <div
+                      className="swiper-slide idx-goods-item"
+                      key={product._id}
+                    >
+                      <div className="img-box">
+                        <Link to={`/product/${product._id}`}>
+                          <img
+                            src="../images/index/product-03.jpg"
+                            className="card-img-top goods-pic"
+                            alt="..."
+                          />
+                        </Link>
+                        {product.tags.productType.length > 0 ? (
+                          <div className="tag-cat-list">
+                            {product.tags.productType.map((cat, idx) => (
+                              <span className="product-cat-tag" key={idx}>
+                                {cat}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {product.tags.keywords.length > 0 ? (
+                          <div className="tag-list">
+                            {product.tags.keywords.map((tag, idx) => (
+                              <span className="product-tag" key={idx}>
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      <div className="card-body">
+                        <Link to={`/product/${product._id}`}>
+                          <h3 className="card-title mb-1">{product.name}</h3>
+                        </Link>
+                        <span className="text-gary-500 mb-2 mb-md-0">
+                          {product.unit}
+                        </span>
 
-                      <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-start align-items-md-end">
-                        <div className="goods-price mb-2 mb-md-0">
-                          <span className="text-secondary-700 fw-bold fs-6 fs-md-4 me-4">
-                            NT.{product.price}
-                          </span>
-                          <span className="old-price text-gary-500">
-                            <del>NT.{product.originalPrice}</del>
-                          </span>
+                        <div className="d-flex flex-column flex-md-row justify-content-md-between align-items-start align-items-md-end">
+                          <div className="goods-price mb-2 mb-md-0">
+                            <span className="text-secondary-700 fw-bold fs-6 fs-md-4 me-4">
+                              NT.{product.price}
+                            </span>
+                            <span className="old-price text-gary-500">
+                              <del>NT.{product.originalPrice}</del>
+                            </span>
+                          </div>
+                          <a href="#" className="buy-btn buy-btn-secondary">
+                            <i className="bi bi-cart3"></i>
+                            <span className="ms-2 d-md-none">加入購物車</span>
+                          </a>
                         </div>
-                        <a href="#" className="buy-btn buy-btn-secondary">
-                          <i className="bi bi-cart3"></i>
-                          <span className="ms-2 d-md-none">加入購物車</span>
-                        </a>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <div className="swiper-button-next swiper-btn-white"></div>
+                <div className="swiper-button-prev swiper-btn-white"></div>
               </div>
-              <div className="swiper-button-next swiper-btn-white"></div>
-              <div className="swiper-button-prev swiper-btn-white"></div>
-            </div>
+            )}
 
             <div className="heart-read-more w-100">
               <div className="d-flex justify-content-center">
-                <Link
-                  to={`/products`}
-                  className="readmore"
-                >
+                <Link to={`/products`} className="readmore">
                   <svg
                     className="me-2"
                     width="16"
@@ -734,11 +789,15 @@ function Home() {
         <div className="container">
           <div className="text-center idx-comment-title mb-2 mb-md-10">
             <img src="../images/icon/pattan.png" className="me-10 me-md-13" />
-            <h2 className="fs-4 fs-md-2 text-primary-700 me-10 me-md-13">客人好評</h2>
+            <h2 className="fs-4 fs-md-2 text-primary-700 me-10 me-md-13">
+              客人好評
+            </h2>
             <img src="../images/icon/pattan.png" alt="" />
           </div>
           <div className="text-center idx-comment-brief text-gary-500">
-            <p className="mb-1">農農自然致力於讓每個人能輕鬆享用新鮮在地的農產品</p>
+            <p className="mb-1">
+              農農自然致力於讓每個人能輕鬆享用新鮮在地的農產品
+            </p>
             <p>以下是來自使用者的寶貴回饋</p>
           </div>
           <div className="swiper idx-comment-list">
@@ -746,137 +805,289 @@ function Home() {
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">林依依</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">好感謝有這個平台，讓我隨時都能補貨，還能快速就近拿到～</p>
+                    <p className="card-text">
+                      好感謝有這個平台，讓我隨時都能補貨，還能快速就近拿到～
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">埔里餐間有機</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">純天然，美味與愛心同在；從田間到心間，每筆交易都有善意！！</p>
+                    <p className="card-text">
+                      純天然，美味與愛心同在；從田間到心間，每筆交易都有善意！！
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">Mike</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">這個平台真是讚，每購一單就能支持一份愛心，大家可以一同響應</p>
+                    <p className="card-text">
+                      這個平台真是讚，每購一單就能支持一份愛心，大家可以一同響應
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">王曉明</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">還不錯，蠻方便的，購買的柚子也還不錯，就是有少數幾顆太酸了</p>
+                    <p className="card-text">
+                      還不錯，蠻方便的，購買的柚子也還不錯，就是有少數幾顆太酸了
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">冰鄉在你家</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">謝謝這個平台給予我們一個管道可以售賣自家的農產品~</p>
+                    <p className="card-text">
+                      謝謝這個平台給予我們一個管道可以售賣自家的農產品~
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">李大大</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">勉強還算可以啦，但這個速度有點慢..</p>
+                    <p className="card-text">
+                      勉強還算可以啦，但這個速度有點慢..
+                    </p>
                   </div>
                 </div>
               </div>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
-                    <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                    <img
+                      src="../images/index/avatar_default.png"
+                      alt="*"
+                      className="rounded-circle object-fit-cover author-img"
+                      width="60px"
+                      height="60px"
+                    />
                     <div className="name-rank">
                       <span className="fullname">林如意</span>
                       <div className="rank-star">
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
-                        <img src="../images/icon/star-yellow.svg" className="star" />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
+                        <img
+                          src="../images/icon/star-yellow.svg"
+                          className="star"
+                        />
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <p className="card-text">可以一起共襄盛舉發心的傳遞自己的心意，真的要推廣一下此平台</p>
+                    <p className="card-text">
+                      可以一起共襄盛舉發心的傳遞自己的心意，真的要推廣一下此平台
+                    </p>
                   </div>
                 </div>
               </div>
@@ -891,69 +1102,115 @@ function Home() {
         <div className="container">
           <div className="idx-about-title d-flex justify-content-center mb-md-13 mb-6">
             <div className="idx-cat-name d-flex">
-              <img src="../images/icon/patten_left.png" className="me-10 me-md-13" />
-              <h2 className="text-secondary-700 fs-4 me-10 me-md-13">關於我們</h2>
+              <img
+                src="../images/icon/patten_left.png"
+                className="me-10 me-md-13"
+              />
+              <h2 className="text-secondary-700 fs-4 me-10 me-md-13">
+                關於我們
+              </h2>
               <img src="../images/icon/patten_right.png" className="me-1" />
             </div>
           </div>
           <div className="text-center idx-about-brief text-gary-500">
-            <p className="mb-1">希望能為在台灣偏鄉地區的人或是當地農民出一份心力</p>
+            <p className="mb-1">
+              希望能為在台灣偏鄉地區的人或是當地農民出一份心力
+            </p>
             <p>讓他們即使無法住在機會很多的都市，也能夠生存下去</p>
           </div>
           <div className="idx-about-list">
-            <div className="idx-about-item-group mb-10">
+            <div className="idx-about-item-group justify-content-end">
               <div className="idx-about-item" data-aos="flip-left">
-                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+                <img
+                  src="../images/index/avatar_default.png"
+                  alt="*"
+                  className="rounded-circle object-fit-cover author-img"
+                  width="60px"
+                  height="60px"
+                />
                 <div className="w-100 data">
                   <div className="d-flex name-social">
                     <h3 className="fw-500 name">Pipi</h3>
                     <div className="ms-auto social">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
-                      </svg>
+                      <a href="https://github.com/169628" target="_blank">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z"
+                            fill="#79A93F"
+                          />
+                        </svg>
+                      </a>
                     </div>
                   </div>
                   <span className="text-gary-500 job">全端工程師</span>
                 </div>
               </div>
-              <div className="idx-about-item" data-aos="flip-right" data-aos-delay="50">
-                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
-                <div className="w-100 data">
-                  <div className="d-flex name-social">
-                    <h3 className="fw-500 name">Abu</h3>
-                    <div className="ms-auto social">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-gary-500 job">全端工程師</span>
-                </div>
-              </div>
-            </div>
-            <div className="idx-about-item-group justify-content-end">
-              <div className="idx-about-item" data-aos="flip-up" data-aos-delay="100">
-                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+              <div
+                className="idx-about-item"
+                data-aos="flip-up"
+                data-aos-delay="100"
+              >
+                <img
+                  src="../images/index/avatar_default.png"
+                  alt="*"
+                  className="rounded-circle object-fit-cover author-img"
+                  width="60px"
+                  height="60px"
+                />
                 <div className="w-100 data">
                   <div className="d-flex name-social">
                     <h3 className="fw-500 name">Sandy</h3>
                     <div className="ms-auto social">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z"
+                          fill="#79A93F"
+                        />
                       </svg>
                     </div>
                   </div>
                   <span className="text-gary-500 job">全端工程師</span>
                 </div>
               </div>
-              <div className="idx-about-item" data-aos="flip-down" data-aos-delay="150">
-                <img src="../images/index/avatar_default.png" alt="*" className="rounded-circle object-fit-cover author-img" width="60px" height="60px" />
+              <div
+                className="idx-about-item"
+                data-aos="flip-down"
+                data-aos-delay="150"
+              >
+                <img
+                  src="../images/index/avatar_default.png"
+                  alt="*"
+                  className="rounded-circle object-fit-cover author-img"
+                  width="60px"
+                  height="60px"
+                />
                 <div className="w-100 data">
                   <div className="d-flex name-social">
                     <h3 className="fw-500 name">Edward</h3>
                     <div className="ms-auto social">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z" fill="#79A93F" />
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z"
+                          fill="#79A93F"
+                        />
                       </svg>
                     </div>
                   </div>
@@ -964,6 +1221,21 @@ function Home() {
           </div>
         </div>
       </div>
+
+      {/*彈跳視窗-廣告*/}
+      <Modal show={showModal} onHide={handleClose} keyboard={false} className="modal fade idx-popup" centered>
+        <Modal.Header>
+          <button variant="secondary" className="btn-close d-flex justify-content-start align-items-center me-14" onClick={handleClose}>
+            <i className="bi bi-x fs-3"></i>
+            <span>Close</span>
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Modal content goes here */}
+          <img src="../images/index/popup.png" className="" alt="廣告" />
+        </Modal.Body>
+      </Modal>
+
     </>
   );
 }

@@ -63,7 +63,7 @@ function Footer() {
                 </li>
                 <li className="">
                   <div className="mb-10 fs-5 fw-bolder">
-                    <Link to="/member">
+                    <Link to="/cart">
                       會員中心
                     </Link>
                   </div>
