@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Swiper } from "swiper/bundle";
 import "swiper/swiper-bundle.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // 可以引用CSS
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import RiseLoader from "react-spinners/RiseLoader";
 
 import { Modal } from 'react-bootstrap';
+
+import { toast } from "react-toastify";
+import { Toast } from "../components/common/Toast";
 
 const areas = ["北部", "中部", "南部", "東部"];
 const categories = ["葉菜類", "根莖瓜果類", "菌菇類", "安心水果類"];
@@ -30,9 +35,46 @@ function Home() {
 
   const handleClose = () => setShowModal(false);
 
+  const dropdownMenuRef = useRef(null);
+  const searchTagListRef = useRef(null);
+
+  //控制點擊搜尋框顯示搜尋標籤
+  useEffect(() => {
+    const handleShowEvent = () => {
+      if (searchTagListRef.current) {
+        searchTagListRef.current.style.display = 'block';
+      }
+    };
+
+    const handleHideEvent = () => {
+      if (searchTagListRef.current) {
+        searchTagListRef.current.style.display = 'none';
+        setSelectedArea(null);
+      }
+    };
+
+    const dropdownElement = dropdownMenuRef.current;
+    if (dropdownElement) {
+      dropdownElement.addEventListener('show.bs.dropdown', handleShowEvent);
+      dropdownElement.addEventListener('hide.bs.dropdown', handleHideEvent);
+    }
+
+    return () => {
+      if (dropdownElement) {
+        dropdownElement.removeEventListener('show.bs.dropdown', handleShowEvent);
+        dropdownElement.removeEventListener('hide.bs.dropdown', handleHideEvent);
+      }
+    };
+  }, []);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(`/products/search/${query}`);
+    if (query != '' && query != undefined) {
+      navigate(`/products/search/${query}`);
+    } else {
+      toast.error("請輸入關鍵字");
+    }
+
   };
 
   const handleAreaClick = (area) => {
@@ -86,6 +128,8 @@ function Home() {
   };
 
   useEffect(() => {
+    AOS.init();
+
     new Swiper(".banner-swiper", {
       slidesPerView: 1,
       loop: true,
@@ -97,31 +141,6 @@ function Home() {
         clickable: true,
       },
     });
-
-    const swiper = new Swiper(".idx-comment-list", {
-      slidesPerView: 3,
-      spaceBetween: 24,
-      direction: width <= 374 ? "vertical" : "horizontal",
-      loop: true,
-      autoplay: true,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: "auto",
-        },
-      },
-      on: {
-        resize: function () {
-          console.log(swiper, width <= 374 ? "vertical" : "horizontal");
-          swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
-        },
-      },
-    });
-
-    document.querySelector(".search-tag-list").style.display = "none";
 
     getNewProducts();
     getHotProducts();
@@ -202,15 +221,34 @@ function Home() {
     });
   }, [heartLoading]);
 
-  // 控制點擊搜尋框顯示搜尋標籤
-  const openSearch = () => {
-    const searchInp = document.querySelector(".search-inp");
-    if (searchInp.getAttribute("class").indexOf("show") > -1) {
-      document.querySelector(".search-tag-list").style.display = "block";
-    } else {
-      document.querySelector(".search-tag-list").style.display = "none";
+  const swiperRef = useRef(null);
+
+  useEffect(() => {
+    if (swiperRef.current) {
+      console.log(width, width <= 374 ? "vertical" : "horizontal");
+      const swiper = new Swiper(".idx-comment-list", {
+        slidesPerView: 3,
+        spaceBetween: 24,
+        direction: width <= 374 ? "vertical" : "horizontal",
+        loop: true,
+        autoplay: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          0: {
+            slidesPerView: "auto",
+          },
+        },
+        on: {
+          resize: function () {
+            swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
+          },
+        }
+      });
     }
-  };
+  }, [width]);
 
   return (
     <>
@@ -250,7 +288,7 @@ function Home() {
               aria-expanded="false"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onClick={openSearch}
+              ref={dropdownMenuRef}
             />
             <a
               className="position-absolute end-0 me-11 text-primary-300"
@@ -260,7 +298,7 @@ function Home() {
               <i className="bi bi-search"></i>
             </a>
 
-            <div className="search-tag-list position-absolute">
+            <div className="search-tag-list position-absolute" ref={searchTagListRef} style={{ display: 'none' }}>
               <ul className="list-unstyled search-tags">
                 <li className="search-tag">
                   <Link to={`/products/search/有機`}>#有機</Link>
@@ -291,9 +329,8 @@ function Home() {
                   {areas.map((area) => (
                     <li
                       key={area}
-                      className={`${
-                        selectedArea === area ? "item-current" : ""
-                      }`}
+                      className={`${selectedArea === area ? "item-current" : ""
+                        }`}
                     >
                       <a
                         className="search-item"
@@ -801,7 +838,7 @@ function Home() {
             <p>以下是來自使用者的寶貴回饋</p>
           </div>
           <div className="swiper idx-comment-list">
-            <div className="swiper-wrapper">
+            <div className="swiper-wrapper" ref={swiperRef}>
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">
@@ -1120,7 +1157,8 @@ function Home() {
           </div>
           <div className="idx-about-list">
             <div className="idx-about-item-group justify-content-end">
-              <div className="idx-about-item" data-aos="flip-left">
+              <div className="idx-about-item" data-aos="flip-left" 
+                data-aos-delay="150">
                 <img
                   src="../images/index/avatar_default.png"
                   alt="*"
@@ -1154,7 +1192,7 @@ function Home() {
               <div
                 className="idx-about-item"
                 data-aos="flip-up"
-                data-aos-delay="100"
+                data-aos-delay="150"
               >
                 <img
                   src="../images/index/avatar_default.png"
@@ -1187,7 +1225,7 @@ function Home() {
               <div
                 className="idx-about-item"
                 data-aos="flip-down"
-                data-aos-delay="150"
+                data-aos-delay="200"
               >
                 <img
                   src="../images/index/avatar_default.png"
@@ -1235,6 +1273,8 @@ function Home() {
           <img src="../images/index/popup.png" className="" alt="廣告" />
         </Modal.Body>
       </Modal>
+
+      <Toast />
 
     </>
   );
