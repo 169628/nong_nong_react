@@ -1,4 +1,4 @@
-textarea{
+textarea {
   resize: none;
 }
 
@@ -64,6 +64,12 @@ textarea{
   }
 }
 
+.btn.active {
+  color: $white;
+  background-color: $primary-300;
+  border: 0;
+}
+
 .cart-alert-text {
   font-size: 14px;
   color: #d16a30;
@@ -85,16 +91,16 @@ textarea{
   @media (max-width: 1400px) {
     width: 254px;
   }
-  &-info{
+  &-info {
     width: 100%;
   }
 }
 
-.storage{
+.storage {
   @include mobile {
-      flex-direction: column;
+    flex-direction: column;
   }
-  .btn{
+  .btn {
     width: 155px;
     @include mobile {
       width: 100%;
