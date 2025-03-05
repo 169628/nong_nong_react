@@ -28,14 +28,14 @@ function Process({ setStep }) {
   return (
     <>
       <div className="container d-flex flex-column justify-content-center align-items-center pt-18">
-        <div className="fs-2 text-primary-700 fw-bold">藍星金流/綠界金流</div>
+        <div className="fs-2 text-primary-700 fw-bold">第三方支付</div>
         <div className="row w-50 my-26 my-md-31">
           <div className="col-6">
             <button
               type="button"
               className="btn btn-outline-primary-500 w-100 py-4"
               onClick={() => {
-                setStep("confirm");
+                setStep("fill");
               }}
             >
               回到上一步

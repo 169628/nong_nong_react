@@ -1,5 +1,6 @@
-function Order({ total }) {
+function Order({ total, delivery }) {
   const orderPrice = total || 0;
+  const deliveryFee = delivery == "自取" ? 0 : 60;
   return (
     <>
       <div className="d-none d-lg-block col-lg-4">
@@ -13,10 +14,14 @@ function Order({ total }) {
                 <span className="text-gary-500">商品總金額</span>
                 <span className="text-gary-500">NT. {orderPrice}</span>
               </li>
-              <li className="d-flex justify-content-between mb-10">
-                <span className="text-gary-500">運費總金額</span>
-                <span className="text-gary-500">NT. 60</span>
-              </li>
+              {delivery == "自取" ? (
+                ""
+              ) : (
+                <li className="d-flex justify-content-between mb-10">
+                  <span className="text-gary-500">運費總金額</span>
+                  <span className="text-gary-500">NT. 60</span>
+                </li>
+              )}
               <li className="d-flex justify-content-between mb-10">
                 <span className="text-gary-500">全館促銷</span>
                 <span className="text-primary-500">9折</span>
@@ -27,7 +32,7 @@ function Order({ total }) {
                 結帳總金額
               </span>
               <span className="text-primary-500 fs-4 fw-bold">
-                $ {Math.round((orderPrice - 60) * 0.9)}
+                $ {Math.round((orderPrice + deliveryFee) * 0.9)}
               </span>
             </div>
             <div className="d-flex justify-content-between align-items-center cart-info-bgcolor py-8 px-6">
@@ -35,7 +40,8 @@ function Order({ total }) {
                 此筆訂單捐贈後可獲得紅利
               </span>
               <span className="text-primary-300 fs-6 fw-bold">
-                {Math.round(Math.round((orderPrice - 60) * 0.9) / 100)} 點
+                {Math.round(Math.round((orderPrice + deliveryFee) * 0.9) / 100)}{" "}
+                點
               </span>
             </div>
           </div>

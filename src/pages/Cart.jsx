@@ -27,13 +27,13 @@ function Cart() {
               delivery={delivery}
               setDelivery={setDelivery}
             />
-            <Order total={total} />
+            <Order total={total} delivery={delivery} />
           </div>
         )}
         {step == "fill" && (
           <div className="row mt-md-26">
             <UserInfo setStep={setStep} delivery={delivery} />
-            <Order total={total} />
+            <Order total={total} delivery={delivery} />
           </div>
         )}
         {step == "process" && <Process setStep={setStep} />}

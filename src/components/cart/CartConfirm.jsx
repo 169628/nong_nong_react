@@ -155,9 +155,14 @@ function CartConfirm({ setStep, setLoading, setTotal, delivery, setDelivery }) {
                   <div className="col d-flex pt-13 pb-10 px-lg-10 pt-md-10 pb-lg-0">
                     <div className="cart-product-photo overflow-hidden rounded-3">
                       <img
-                        src="/images/index/product-01.jpg"
+                        src={item.image}
                         className="img-fluid"
                         alt="wendan"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
                       />
                     </div>
                     <ul className="list-unstyled ms-4">
