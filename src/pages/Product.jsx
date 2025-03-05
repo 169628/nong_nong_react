@@ -105,7 +105,7 @@ function Product() {
         },
       },
     });
-  }, []);
+  }, [loading]);
 
   return (
     <>
@@ -123,11 +123,20 @@ function Product() {
             <p className="text-gary-500">{`${product.area} / ${product.category} / ${product.name}`}</p>
             <div className="row">
               <div className="col-lg-5 mb-sm-13">
-                <img
-                  className="product-img"
-                  src="/images/product/product_cover.png"
-                  alt="產品主照"
-                />
+                <div
+                  style={{
+                    width: "526px",
+                    height: "526px",
+                    overflow: "hidden",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <img
+                    className="product-img"
+                    src={product.image}
+                    alt="產品主照"
+                  />
+                </div>
               </div>
               <div className="col-lg-7 d-flex flex-column product gap-10 ">
                 <div className="product-title">
@@ -247,19 +256,17 @@ function Product() {
                 <li className="intro-1 row d-flex mx-0">
                   <div className="col-lg-6 px-0">
                     <img
-                      src="/images/product/product_Intro_1.jpg"
+                      src={product.advertise?.[0]?.description?.[0]?.image}
                       alt="商品圖1"
                     />
                   </div>
                   <div className="col-lg-6 px-0 d-flex align-items-center bg-describe">
                     <div className="d-flex flex-column describe gap-6">
                       <div className="fs-2 text-primary-500 fw-bold mb-0 text-center">
-                        {product.advertise &&
-                          product.advertise[0].description[0].title}
+                        {product.advertise?.[0]?.description?.[0]?.title}
                       </div>
                       <div className="fs-5">
-                        {product.advertise &&
-                          product.advertise[0].description[0].content1}
+                        {product.advertise?.[0]?.description?.[0]?.content1}
                       </div>
                     </div>
                   </div>
@@ -268,18 +275,16 @@ function Product() {
                   <div className="col-lg-6 px-0 d-flex align-items-center bg-describe">
                     <div className="d-flex flex-column describe gap-6">
                       <div className="fs-2 text-secondary-700 fw-bold mb-0 text-center">
-                        {product.advertise &&
-                          product.advertise[0].description[1].title}
+                        {product.advertise?.[0]?.description?.[1]?.title}
                       </div>
                       <div className="fs-5">
-                        {product.advertise &&
-                          product.advertise[0].description[1].content1}
+                        {product.advertise?.[0]?.description?.[1]?.content1}
                       </div>
                     </div>
                   </div>
                   <div className="col-lg-6 px-0">
                     <img
-                      src="/images/product/product_Intro_2.jpg"
+                      src={product.advertise?.[0]?.description?.[1]?.image}
                       alt="商品圖2"
                     />
                   </div>
@@ -287,7 +292,7 @@ function Product() {
                 <li className="intro-3">
                   <div className="bg">
                     <img
-                      src="/images/product/product_Intro_3.jpg"
+                      src={product.advertise?.[0]?.description?.[2]?.image}
                       alt="商品圖3"
                     />
                   </div>
@@ -295,16 +300,13 @@ function Product() {
                 <li className="intro-4">
                   <div className="d-flex flex-column align-items-center bg describe">
                     <div className="fs-2 text-primary-500 fw-bold mb-6">
-                      {product.advertise &&
-                        product.advertise[0].description[2].title}
+                      {product.advertise?.[0]?.description?.[2]?.title}
                     </div>
                     <div className="fs-5">
-                      {product.advertise &&
-                        product.advertise[0].description[2].content1}
+                      {product.advertise?.[0]?.description?.[2]?.content1}
                     </div>
                     <div className="fs-5 gap-break-point">
-                      {product.advertise &&
-                        product.advertise[0].description[2].content2}
+                      {product.advertise?.[0]?.description?.[2]?.content2}
                     </div>
                   </div>
                 </li>
@@ -396,34 +398,35 @@ function Product() {
                   alt="小農園"
                 />
                 <div className="farm-owner">
-                  <img
-                    className="rounded-circle"
-                    src="/images/product/farm_owner.png"
-                    alt="小農"
-                  />
+                  <div
+                    style={{
+                      width: "230px",
+                      height: "230px",
+                      overflow: "hidden",
+                      borderRadius: "50%",
+                      border: "2px white solid",
+                    }}
+                  >
+                    <img src={product.storeInfo?.[0]?.image} alt="小農" />
+                  </div>
                   <div className="d-flex flex-column align-items-center">
                     <div className="farm-name fw-bold text-primary-500 ">
-                      {product.storeInfo && product.storeInfo[0].storeName}
+                      {product.storeInfo?.[0]?.storeName}
                     </div>
                     <h4 className="farm-owner-name mb-0">
-                      {product.storeInfo &&
-                        product.storeInfo[0].account.userName}
+                      {product.storeInfo?.[0]?.account?.userName}
                     </h4>
                   </div>
                 </div>
               </div>
               <div className="describe">
                 <div className="describe-title fs-2 fw-bold text-primary-500 mb-2">
-                  {product.storeInfo && product.storeInfo[0].introTitle}
+                  {product.storeInfo?.[0]?.introTitle}
                 </div>
                 <div className="describe-content fs-5">
-                  <p>
-                    {product.storeInfo && product.storeInfo[0].introContent1}
-                  </p>
+                  <p>{product.storeInfo?.[0]?.introContent1}</p>
                   <br />
-                  <p>
-                    {product.storeInfo && product.storeInfo[0].introContent2}
-                  </p>
+                  <p>{product.storeInfo?.[0]?.introContent2}</p>
                 </div>
               </div>
             </div>
@@ -459,7 +462,7 @@ function Product() {
                           height="60px"
                         />
                         <div className="name-rank">
-                          <span className="fullname">林依依</span>
+                          <span className="fullname">Andrew</span>
                           <div className="rank-star">
                             <img
                               src="../images/icon/star-yellow.svg"
@@ -490,7 +493,7 @@ function Product() {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          好感謝有這個平台，讓我隨時都能補貨，還能快速就近拿到～
+                          新鮮清脆，能品嚐到自然的陽光與大地，非常滿意。
                         </p>
                       </div>
                     </div>
@@ -506,7 +509,7 @@ function Product() {
                           height="60px"
                         />
                         <div className="name-rank">
-                          <span className="fullname">埔里餐間有機</span>
+                          <span className="fullname">張小姐</span>
                           <div className="rank-star">
                             <img
                               src="../images/icon/star-yellow.svg"
@@ -533,7 +536,7 @@ function Product() {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          純天然，美味與愛心同在；從田間到心間，每筆交易都有善意！！
+                          口感不錯，但甜度稍微不足，整體來說還可以，但沒有特別驚豔。
                         </p>
                       </div>
                     </div>
@@ -549,7 +552,7 @@ function Product() {
                           height="60px"
                         />
                         <div className="name-rank">
-                          <span className="fullname">Mike</span>
+                          <span className="fullname">花媽</span>
                           <div className="rank-star">
                             <img
                               src="../images/icon/star-yellow.svg"
@@ -576,163 +579,7 @@ function Product() {
                       </div>
                       <div className="card-body">
                         <p className="card-text">
-                          這個平台真是讚，每購一單就能支持一份愛心，大家可以一同響應
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="swiper-slide idx-comment-item">
-                    <div className="row g-0">
-                      <div className="card-header">
-                        <img
-                          src="../images/index/avatar_default.png"
-                          alt="*"
-                          className="rounded-circle object-fit-cover author-img"
-                          width="60px"
-                          height="60px"
-                        />
-                        <div className="name-rank">
-                          <span className="fullname">王曉明</span>
-                          <div className="rank-star">
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="card-body">
-                        <p className="card-text">
-                          還不錯，蠻方便的，購買的柚子也還不錯，就是有少數幾顆太酸了
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="swiper-slide idx-comment-item">
-                    <div className="row g-0">
-                      <div className="card-header">
-                        <img
-                          src="../images/index/avatar_default.png"
-                          alt="*"
-                          className="rounded-circle object-fit-cover author-img"
-                          width="60px"
-                          height="60px"
-                        />
-                        <div className="name-rank">
-                          <span className="fullname">冰鄉在你家</span>
-                          <div className="rank-star">
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="card-body">
-                        <p className="card-text">
-                          謝謝這個平台給予我們一個管道可以售賣自家的農產品~
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="swiper-slide idx-comment-item">
-                    <div className="row g-0">
-                      <div className="card-header">
-                        <img
-                          src="../images/index/avatar_default.png"
-                          alt="*"
-                          className="rounded-circle object-fit-cover author-img"
-                          width="60px"
-                          height="60px"
-                        />
-                        <div className="name-rank">
-                          <span className="fullname">李大大</span>
-                          <div className="rank-star">
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="card-body">
-                        <p className="card-text">
-                          勉強還算可以啦，但這個速度有點慢..
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="swiper-slide idx-comment-item">
-                    <div className="row g-0">
-                      <div className="card-header">
-                        <img
-                          src="../images/index/avatar_default.png"
-                          alt="*"
-                          className="rounded-circle object-fit-cover author-img"
-                          width="60px"
-                          height="60px"
-                        />
-                        <div className="name-rank">
-                          <span className="fullname">林如意</span>
-                          <div className="rank-star">
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                            <img
-                              src="../images/icon/star-yellow.svg"
-                              className="star"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="card-body">
-                        <p className="card-text">
-                          可以一起共襄盛舉發心的傳遞自己的心意，真的要推廣一下此平台
+                          我家小孩最挑嘴了，但這次的芭樂他們都吃得很開心，還搶著要再吃。真心推薦給所有媽媽們！
                         </p>
                       </div>
                     </div>
