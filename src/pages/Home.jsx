@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Swiper } from "swiper/bundle";
-import "swiper/swiper-bundle.css";
 import AOS from 'aos';
-import 'aos/dist/aos.css'; // 可以引用CSS
+import 'aos/dist/aos.css';
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import RiseLoader from "react-spinners/RiseLoader";
@@ -14,6 +13,12 @@ import { Toast } from "../components/common/Toast";
 
 const areas = ["北部", "中部", "南部", "東部"];
 const categories = ["葉菜類", "根莖瓜果類", "菌菇類", "安心水果類"];
+const categories2 = ["葉菜類", "根莖瓜果類", "安心水果類"];
+
+const tagArr = ["有機", "捐贈", "熱門", "最新"];
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
 
 function Home() {
   const [newGoods, setNewGoods] = useState([]);
@@ -21,6 +26,7 @@ function Home() {
   const [heartGoods, setHeartGoods] = useState([]);
   const [selectedArea, setSelectedArea] = useState(null);
   const [menuCate, setMenuCate] = useState([]);
+  const [tagList, setTagList] = useState(tagArr);
 
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
@@ -42,6 +48,7 @@ function Home() {
   useEffect(() => {
     const handleShowEvent = () => {
       if (searchTagListRef.current) {
+        setTagList([...shuffleArray(tagList)]);
         searchTagListRef.current.style.display = 'block';
       }
     };
@@ -50,6 +57,7 @@ function Home() {
       if (searchTagListRef.current) {
         searchTagListRef.current.style.display = 'none';
         setSelectedArea(null);
+        setMenuCate([]);
       }
     };
 
@@ -69,17 +77,24 @@ function Home() {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    saerchGoods();
+  };
+  const handleSubmit = (e) => {
+    if (e.key === 'Enter') {
+      saerchGoods();
+    }
+  };
+  const saerchGoods = () => {
     if (query != '' && query != undefined) {
       navigate(`/products/search/${query}`);
     } else {
       toast.error("請輸入關鍵字");
     }
-
   };
 
   const handleAreaClick = (area) => {
     setSelectedArea(area);
-    setMenuCate(categories);
+    setMenuCate(['北部', '南部'].includes(area) ? categories : categories2);
   };
 
   useEffect(() => {
@@ -221,33 +236,31 @@ function Home() {
     });
   }, [heartLoading]);
 
-  const swiperRef = useRef(null);
-
   useEffect(() => {
-    if (swiperRef.current) {
-      console.log(width, width <= 374 ? "vertical" : "horizontal");
-      const swiper = new Swiper(".idx-comment-list", {
-        slidesPerView: 3,
-        spaceBetween: 24,
-        direction: width <= 374 ? "vertical" : "horizontal",
-        loop: true,
-        autoplay: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          0: {
-            slidesPerView: "auto",
-          },
-        },
-        on: {
-          resize: function () {
-            swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
-          },
+    const swiper = new Swiper(".idx-comment-list", {
+      slidesPerView: 3,
+      spaceBetween: 24,
+      direction: width <= 374 ? "vertical" : "horizontal",
+      loop: true,
+      autoplay: {
+        delay: 2500, //N秒切换一次
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: "auto",
         }
-      });
-    }
+      }
+    });
+    swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
+
+    return () => {
+      // 清除 Swiper 实例
+      swiper.destroy();
+    };
   }, [width]);
 
   return (
@@ -288,6 +301,7 @@ function Home() {
               aria-expanded="false"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyUp={handleSubmit}
               ref={dropdownMenuRef}
             />
             <a
@@ -300,18 +314,11 @@ function Home() {
 
             <div className="search-tag-list position-absolute" ref={searchTagListRef} style={{ display: 'none' }}>
               <ul className="list-unstyled search-tags">
-                <li className="search-tag">
-                  <Link to={`/products/search/有機`}>#有機</Link>
-                </li>
-                <li className="search-tag">
-                  <Link to={`/products/search/捐贈`}>#捐贈</Link>
-                </li>
-                <li className="search-tag">
-                  <Link to={`/products/search/熱門`}>#熱門</Link>
-                </li>
-                <li className="search-tag">
-                  <Link to={`/products/search/最新`}>#最新</Link>
-                </li>
+                {tagList.map((tag) => (
+                  <li className="search-tag" key={tag}>
+                    <Link to={`/products/search/${tag}`}>#{tag}</Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -408,7 +415,7 @@ function Home() {
                       <div className="img-box">
                         <Link to={`/product/${product._id}`}>
                           <img
-                            src="../images/index/product-01.jpg"
+                            src={product.image}
                             className="card-img-top goods-pic"
                             alt="..."
                           />
@@ -508,7 +515,7 @@ function Home() {
                       <div className="img-box">
                         <Link to={`/product/${product._id}`}>
                           <img
-                            src="../images/index/product-01.jpg"
+                            src={product.image}
                             className="card-img-top goods-pic"
                             alt="..."
                           />
@@ -605,7 +612,7 @@ function Home() {
                       <div className="img-box">
                         <Link to={`/product/${product._id}`}>
                           <img
-                            src="../images/index/product-03.jpg"
+                            src={product.image}
                             className="card-img-top goods-pic"
                             alt="..."
                           />
@@ -838,7 +845,7 @@ function Home() {
             <p>以下是來自使用者的寶貴回饋</p>
           </div>
           <div className="swiper idx-comment-list">
-            <div className="swiper-wrapper" ref={swiperRef}>
+            <div className="swiper-wrapper">
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
                   <div className="card-header">

@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { Toast } from "../components/common/Toast";
 
 import { Swiper } from "swiper/bundle";
-import "swiper/swiper-bundle.css";
 
 function Product() {
   const [product, setProduct] = useState({});
@@ -88,7 +87,9 @@ function Product() {
       spaceBetween: 24,
       direction: width <= 374 ? "vertical" : "horizontal",
       loop: true,
-      autoplay: true,
+      autoplay: {
+        delay: 2500, //N秒切换一次
+      },
       navigation: {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
@@ -96,16 +97,18 @@ function Product() {
       breakpoints: {
         0: {
           slidesPerView: "auto",
-        },
-      },
-      on: {
-        resize: function () {
-          console.log(swiper, width <= 374 ? "vertical" : "horizontal");
-          swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
-        },
-      },
+        }
+      }
     });
-  }, [loading]);
+    swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
+
+    if (loading != true) {
+      return () => {
+        // 清除 Swiper 实例
+        swiper.destroy();
+      };
+    }
+  }, [loading, width]);
 
   return (
     <>
