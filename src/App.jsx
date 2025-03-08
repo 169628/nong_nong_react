@@ -1,5 +1,6 @@
 import { createHashRouter, RouterProvider } from "react-router-dom";
 
+import "swiper/swiper-bundle.css";
 import "./assets/all.scss";
 import 'bootstrap/dist/js/bootstrap.min.js';
 import routes from "./routes";

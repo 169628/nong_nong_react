@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Footer() {
   return (
     <>
@@ -11,13 +13,13 @@ function Footer() {
             <div className="col-md-8 col-lg-6 mb-20 mb-md-0">
               <div className="d-flex mb-6 footer-contact">
                 <div className="footer-brand me-md-15">
-                  <a href="index.html">
+                  <Link to="">
                     <img
                       className="footer-logo"
                       src="../images/logo/logo_default_white.png"
                       alt="農農自然Logo"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <ul className="list-unstyled d-flex d-md-none pt-4 social-list">
                   <li className="me-2">
@@ -54,12 +56,16 @@ function Footer() {
               <ul className="list-unstyled d-flex justify-content-center">
                 <li className="me-15 me-lg-20">
                   <div className="mb-10 fs-5 fw-bolder">
-                    <a href="product.html">商品列表</a>
+                    <Link to="/products">
+                      商品列表
+                    </Link>
                   </div>
                 </li>
                 <li className="">
                   <div className="mb-10 fs-5 fw-bolder">
-                    <a href="#">會員中心</a>
+                    <Link to="/cart">
+                      會員中心
+                    </Link>
                   </div>
                 </li>
               </ul>
