@@ -56,17 +56,23 @@ function Footer() {
               <ul className="list-unstyled d-flex justify-content-center">
                 <li className="me-15 me-lg-20">
                   <div className="mb-10 fs-5 fw-bolder">
-                    <Link to="/products">
-                      商品列表
-                    </Link>
+                    <Link to="/products">商品列表</Link>
                   </div>
                 </li>
                 <li className="">
-                  <div className="mb-10 fs-5 fw-bolder">
-                    <Link to="/cart">
-                      會員中心
-                    </Link>
-                  </div>
+                  <a
+                    className="mb-10 fs-5 fw-bolder"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                      });
+                    }}
+                  >
+                    會員中心
+                  </a>
                 </li>
               </ul>
             </div>

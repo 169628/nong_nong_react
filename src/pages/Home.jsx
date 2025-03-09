@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { Swiper } from "swiper/bundle";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import RiseLoader from "react-spinners/RiseLoader";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Modal } from 'react-bootstrap';
-
-import { toast } from "react-toastify";
-import { Toast } from "../components/common/Toast";
+import { pushToast } from "../slice/toastSlice";
+import { asyncCart } from "../slice/cartSlice";
+import { Modal } from "react-bootstrap";
 
 const areas = ["北部", "中部", "南部", "東部"];
 const categories = ["葉菜類", "根莖瓜果類", "菌菇類", "安心水果類"];
@@ -28,7 +28,7 @@ function Home() {
   const [menuCate, setMenuCate] = useState([]);
   const [tagList, setTagList] = useState(tagArr);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   const [newLoading, setNewLoading] = useState(false);
@@ -43,19 +43,20 @@ function Home() {
 
   const dropdownMenuRef = useRef(null);
   const searchTagListRef = useRef(null);
-
+  const dispatch = useDispatch();
+  const { userId } = useSelector((state) => state.user);
   //控制點擊搜尋框顯示搜尋標籤
   useEffect(() => {
     const handleShowEvent = () => {
       if (searchTagListRef.current) {
         setTagList([...shuffleArray(tagList)]);
-        searchTagListRef.current.style.display = 'block';
+        searchTagListRef.current.style.display = "block";
       }
     };
 
     const handleHideEvent = () => {
       if (searchTagListRef.current) {
-        searchTagListRef.current.style.display = 'none';
+        searchTagListRef.current.style.display = "none";
         setSelectedArea(null);
         setMenuCate([]);
       }
@@ -63,14 +64,20 @@ function Home() {
 
     const dropdownElement = dropdownMenuRef.current;
     if (dropdownElement) {
-      dropdownElement.addEventListener('show.bs.dropdown', handleShowEvent);
-      dropdownElement.addEventListener('hide.bs.dropdown', handleHideEvent);
+      dropdownElement.addEventListener("show.bs.dropdown", handleShowEvent);
+      dropdownElement.addEventListener("hide.bs.dropdown", handleHideEvent);
     }
 
     return () => {
       if (dropdownElement) {
-        dropdownElement.removeEventListener('show.bs.dropdown', handleShowEvent);
-        dropdownElement.removeEventListener('hide.bs.dropdown', handleHideEvent);
+        dropdownElement.removeEventListener(
+          "show.bs.dropdown",
+          handleShowEvent
+        );
+        dropdownElement.removeEventListener(
+          "hide.bs.dropdown",
+          handleHideEvent
+        );
       }
     };
   }, []);
@@ -80,21 +87,26 @@ function Home() {
     saerchGoods();
   };
   const handleSubmit = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       saerchGoods();
     }
   };
   const saerchGoods = () => {
-    if (query != '' && query != undefined) {
+    if (query != "" && query != undefined) {
       navigate(`/products/search/${query}`);
     } else {
-      toast.error("請輸入關鍵字");
+      dispatch(
+        pushToast({
+          type: "error",
+          message: "請輸入關鍵字",
+        })
+      );
     }
   };
 
   const handleAreaClick = (area) => {
     setSelectedArea(area);
-    setMenuCate(['北部', '南部'].includes(area) ? categories : categories2);
+    setMenuCate(["北部", "南部"].includes(area) ? categories : categories2);
   };
 
   useEffect(() => {
@@ -104,6 +116,45 @@ function Home() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const addToCart = async (e, id) => {
+    try {
+      e.preventDefault();
+      if (!userId) {
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "請先登入會員",
+          })
+        );
+      }
+      const result = await axios.put(
+        `${import.meta.env.VITE_APP_URL}/carts/${userId}`,
+        {
+          productId: id,
+          quantity: 1,
+        }
+      );
+
+      if (result.data.result == 1) {
+        dispatch(
+          pushToast({
+            type: "success",
+            message: "已成功加入購物車",
+          })
+        );
+        dispatch(asyncCart());
+      }
+    } catch (error) {
+      dispatch(
+        pushToast({
+          type: "error",
+          message: "加入購物車失敗",
+        })
+      );
+      console.log(error);
+    }
+  };
 
   const getNewProducts = async () => {
     try {
@@ -252,8 +303,8 @@ function Home() {
       breakpoints: {
         0: {
           slidesPerView: "auto",
-        }
-      }
+        },
+      },
     });
     swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
 
@@ -312,7 +363,11 @@ function Home() {
               <i className="bi bi-search"></i>
             </a>
 
-            <div className="search-tag-list position-absolute" ref={searchTagListRef} style={{ display: 'none' }}>
+            <div
+              className="search-tag-list position-absolute"
+              ref={searchTagListRef}
+              style={{ display: "none" }}
+            >
               <ul className="list-unstyled search-tags">
                 {tagList.map((tag) => (
                   <li className="search-tag" key={tag}>
@@ -336,8 +391,9 @@ function Home() {
                   {areas.map((area) => (
                     <li
                       key={area}
-                      className={`${selectedArea === area ? "item-current" : ""
-                        }`}
+                      className={`${
+                        selectedArea === area ? "item-current" : ""
+                      }`}
                     >
                       <a
                         className="search-item"
@@ -462,7 +518,13 @@ function Home() {
                               <del>NT.{product.originalPrice}</del>
                             </span>
                           </div>
-                          <a href="#" className="buy-btn buy-btn-primary">
+                          <a
+                            href="#"
+                            className="buy-btn buy-btn-primary"
+                            onClick={(e) => {
+                              addToCart(e, product._id);
+                            }}
+                          >
                             <i className="bi bi-cart3"></i>
                             <span className="ms-2 d-md-none">加入購物車</span>
                           </a>
@@ -561,7 +623,13 @@ function Home() {
                               <del>NT.{product.originalPrice}</del>
                             </span>
                           </div>
-                          <a href="#" className="buy-btn buy-btn-primary">
+                          <a
+                            href="#"
+                            className="buy-btn buy-btn-primary"
+                            onClick={(e) => {
+                              addToCart(e, product._id);
+                            }}
+                          >
                             <i className="bi bi-cart3"></i>
                             <span className="ms-2 d-md-none">加入購物車</span>
                           </a>
@@ -657,7 +725,13 @@ function Home() {
                               <del>NT.{product.originalPrice}</del>
                             </span>
                           </div>
-                          <a href="#" className="buy-btn buy-btn-secondary">
+                          <a
+                            href="#"
+                            className="buy-btn buy-btn-secondary"
+                            onClick={(e) => {
+                              addToCart(e, product._id);
+                            }}
+                          >
                             <i className="bi bi-cart3"></i>
                             <span className="ms-2 d-md-none">加入購物車</span>
                           </a>
@@ -1164,8 +1238,11 @@ function Home() {
           </div>
           <div className="idx-about-list">
             <div className="idx-about-item-group justify-content-end">
-              <div className="idx-about-item" data-aos="flip-left" 
-                data-aos-delay="150">
+              <div
+                className="idx-about-item"
+                data-aos="flip-left"
+                data-aos-delay="150"
+              >
                 <img
                   src="../images/index/avatar_default.png"
                   alt="*"
@@ -1245,18 +1322,20 @@ function Home() {
                   <div className="d-flex name-social">
                     <h3 className="fw-500 name">Edward</h3>
                     <div className="ms-auto social">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z"
-                          fill="#79A93F"
-                        />
-                      </svg>
+                      <a href="https://github.com/Edward6m" target="_blank">
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 2C6.475 2 2 6.475 2 12C2 16.425 4.8625 20.1625 8.8375 21.4875C9.3375 21.575 9.525 21.275 9.525 21.0125C9.525 20.775 9.5125 19.9875 9.5125 19.15C7 19.6125 6.35 18.5375 6.15 17.975C6.0375 17.6875 5.55 16.8 5.125 16.5625C4.775 16.375 4.275 15.9125 5.1125 15.9C5.9 15.8875 6.4625 16.625 6.65 16.925C7.55 18.4375 8.9875 18.0125 9.5625 17.75C9.65 17.1 9.9125 16.6625 10.2 16.4125C7.975 16.1625 5.65 15.3 5.65 11.475C5.65 10.3875 6.0375 9.4875 6.675 8.7875C6.575 8.5375 6.225 7.5125 6.775 6.1375C6.775 6.1375 7.6125 5.875 9.525 7.1625C10.325 6.9375 11.175 6.825 12.025 6.825C12.875 6.825 13.725 6.9375 14.525 7.1625C16.4375 5.8625 17.275 6.1375 17.275 6.1375C17.825 7.5125 17.475 8.5375 17.375 8.7875C18.0125 9.4875 18.4 10.375 18.4 11.475C18.4 15.3125 16.0625 16.1625 13.8375 16.4125C14.2 16.725 14.5125 17.325 14.5125 18.2625C14.5125 19.6 14.5 20.675 14.5 21.0125C14.5 21.275 14.6875 21.5875 15.1875 21.4875C17.173 20.8178 18.8983 19.5421 20.1205 17.84C21.3427 16.138 22 14.0954 22 12C22 6.475 17.525 2 12 2Z"
+                            fill="#79A93F"
+                          />
+                        </svg>
+                      </a>
                     </div>
                   </div>
                   <span className="text-gary-500 job">全端工程師</span>
@@ -1268,9 +1347,19 @@ function Home() {
       </div>
 
       {/*彈跳視窗-廣告*/}
-      <Modal show={showModal} onHide={handleClose} keyboard={false} className="modal fade idx-popup" centered>
+      <Modal
+        show={showModal}
+        onHide={handleClose}
+        keyboard={false}
+        className="modal fade idx-popup"
+        centered
+      >
         <Modal.Header>
-          <button variant="secondary" className="btn-close d-flex justify-content-start align-items-center me-14" onClick={handleClose}>
+          <button
+            variant="secondary"
+            className="btn-close d-flex justify-content-start align-items-center me-14"
+            onClick={handleClose}
+          >
             <i className="bi bi-x fs-3"></i>
             <span>Close</span>
           </button>
@@ -1280,9 +1369,6 @@ function Home() {
           <img src="../images/index/popup.png" className="" alt="廣告" />
         </Modal.Body>
       </Modal>
-
-      <Toast />
-
     </>
   );
 }

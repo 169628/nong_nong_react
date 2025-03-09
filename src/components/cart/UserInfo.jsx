@@ -1,14 +1,14 @@
 import { useState } from "react";
 import validator from "validator";
-import { toast } from "react-toastify";
-
-import { Toast } from "../../components/common/Toast";
+import { useDispatch, useSelector } from "react-redux";
+import { pushToast } from "../../slice/toastSlice";
 
 function UserInfo({ setStep, delivery }) {
   const [bill, setBill] = useState("電子");
   const [pay, setPay] = useState("信用卡");
+  const { userName } = useSelector((state) => state.user);
   const [order, setOrder] = useState({
-    name: "",
+    name: userName || "",
     tel: "",
     email: "",
   });
@@ -20,6 +20,7 @@ function UserInfo({ setStep, delivery }) {
     address: "",
   });
   const [storehouse, setStorehouse] = useState("");
+  const dispatch = useDispatch();
   const handleOrder = (e) => {
     setOrder({
       ...order,
@@ -43,37 +44,107 @@ function UserInfo({ setStep, delivery }) {
     const regex = /^(0[2-8]\d{7}|09\d{8})$/;
     const codeRegex = /^\d{5}$/;
     if (!order.name) {
-      return toast.error("訂購人姓名不可為空白");
+      return dispatch(
+        pushToast({
+          type: "error",
+          message: "訂購人姓名不可為空白",
+        })
+      );
     } else if (!order.tel) {
-      return toast.error("訂購人電話不可為空白");
+      return dispatch(
+        pushToast({
+          type: "error",
+          message: "訂購人電話不可為空白",
+        })
+      );
     } else if (!validator.matches(order.tel, regex)) {
-      return toast.error("訂購人電話格式錯誤");
+      return dispatch(
+        pushToast({
+          type: "error",
+          message: "訂購人電話格式錯誤",
+        })
+      );
     } else if (!order.email) {
-      return toast.error("訂購人信箱不可為空白");
+      return dispatch(
+        pushToast({
+          type: "error",
+          message: "訂購人信箱不可為空白",
+        })
+      );
     } else if (!validator.isEmail(order.email)) {
-      return toast.error("訂購人信箱格式錯誤");
+      return dispatch(
+        pushToast({
+          type: "error",
+          message: "訂購人信箱格式錯誤",
+        })
+      );
     }
     if (delivery == "宅配") {
       if (!receive.name) {
-        return toast.error("收件人姓名不可為空白");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人姓名不可為空白",
+          })
+        );
       } else if (!receive.tel) {
-        return toast.error("收件人電話不可為空白");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人電話不可為空白",
+          })
+        );
       } else if (!validator.matches(receive.tel, regex)) {
-        return toast.error("收件人電話格式錯誤");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人電話格式錯誤",
+          })
+        );
       } else if (!receive.email) {
-        return toast.error("收件人信箱不可為空白");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人信箱不可為空白",
+          })
+        );
       } else if (!validator.isEmail(receive.email)) {
-        return toast.error("收件人信箱格式錯誤");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人信箱格式錯誤",
+          })
+        );
       } else if (!receive.code) {
-        return toast.error("收件人郵遞區號不可為空白");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人郵遞區號不可為空白",
+          })
+        );
       } else if (!validator.matches(receive.code, codeRegex)) {
-        return toast.error("收件人郵遞區號格式錯誤");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人郵遞區號格式錯誤",
+          })
+        );
       } else if (!receive.address) {
-        return toast.error("收件人地址不可為空白");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "收件人地址不可為空白",
+          })
+        );
       }
     } else if (delivery == "自取") {
       if (storehouse == "") {
-        return toast.error("請選擇一個自取倉庫");
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "請選擇一個自取倉庫",
+          })
+        );
       }
     }
     setStep("process");
@@ -106,6 +177,9 @@ function UserInfo({ setStep, delivery }) {
                   value={order.name}
                   onChange={handleOrder}
                 />
+                <div className="py-1 text-gary-500 cart-info-li-text">
+                  ※ 請輸入真實姓名
+                </div>
               </div>
             </div>
             <div className="buyer-phone row">
@@ -618,7 +692,6 @@ function UserInfo({ setStep, delivery }) {
             </button>
           </div>
         </div>
-        <Toast />
       </div>
     </>
   );

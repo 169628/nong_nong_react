@@ -2,7 +2,7 @@ function Page404() {
   return (
     <>
       <div
-        className="container d-flex flex-column justify-content-center align-items-center"
+        className="container d-flex flex-column justify-content-center align-items-center pt-36"
         style={{ height: "60vh" }}
       >
         <h1 className="text-primary-500">404</h1>

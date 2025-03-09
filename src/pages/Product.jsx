@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import RiseLoader from "react-spinners/RiseLoader";
 import StockModal from "../components/oneProduct/stockModal";
-import { toast } from "react-toastify";
-
-import { Toast } from "../components/common/Toast";
+import { useDispatch, useSelector } from "react-redux";
+import { pushToast } from "../slice/toastSlice";
+import { asyncCart } from "../slice/cartSlice";
 
 import { Swiper } from "swiper/bundle";
 
@@ -14,15 +14,12 @@ function Product() {
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [num, setNum] = useState(1);
-  const user = {
-    id: "6776a26276e2f6e0ea3a680f",
-    token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NzZhMjYyNzZlMmY2ZTBlYTNhNjgwZiIsIm5hbWUiOiLnvqnlpKfliKnpu5HmiYvpu6giLCJpYXQiOjE3NDA3MDg5NzMsImV4cCI6MTc0MTMxMzc3M30.JlbMypKCTpNIDE08wA81Avu-1FiCIrktzHWWL3Mrr1w",
-  };
+  const { userId } = useSelector((state) => state.user);
 
   const [width, setWidth] = useState(window.innerWidth);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
 
   const getProduct = async () => {
@@ -46,9 +43,16 @@ function Product() {
 
   const addToCart = async () => {
     try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+      if (!userId) {
+        return dispatch(
+          pushToast({
+            type: "error",
+            message: "請先登入會員",
+          })
+        );
+      }
       const result = await axios.put(
-        `${import.meta.env.VITE_APP_URL}/carts/${user.id}`,
+        `${import.meta.env.VITE_APP_URL}/carts/${userId}`,
         {
           productId: id,
           quantity: num,
@@ -56,11 +60,22 @@ function Product() {
       );
 
       if (result.data.result == 1) {
-        toast.success(`${product.name} x ${num} 已成功加入購物車`);
+        dispatch(
+          pushToast({
+            type: "success",
+            message: `${product.name} x ${num} 已成功加入購物車`,
+          })
+        );
+        dispatch(asyncCart());
         setNum(1);
       }
     } catch (error) {
-      toast.error("加入購物車失敗");
+      dispatch(
+        pushToast({
+          type: "error",
+          message: "加入購物車失敗",
+        })
+      );
       console.log(error);
     }
   };
@@ -97,8 +112,8 @@ function Product() {
       breakpoints: {
         0: {
           slidesPerView: "auto",
-        }
-      }
+        },
+      },
     });
     swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
 
@@ -114,14 +129,13 @@ function Product() {
     <>
       {loading ? (
         <div
-          className="container d-flex justify-content-center align-items-center"
+          className="container d-flex justify-content-center align-items-center pt-36"
           style={{ height: "60vh" }}
         >
           <RiseLoader color="#966A09" size={30} />
         </div>
       ) : (
         <div>
-          <Toast />
           <div className="container mt-16 mt-md-36">
             <p className="text-gary-500">{`${product.area} / ${product.category} / ${product.name}`}</p>
             <div className="row">
@@ -583,6 +597,237 @@ function Product() {
                       <div className="card-body">
                         <p className="card-text">
                           我家小孩最挑嘴了，但這次的芭樂他們都吃得很開心，還搶著要再吃。真心推薦給所有媽媽們！
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">王小明</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          新鮮度超讚！蔬菜水果都很新鮮，價格也很公道，買過一次就變常客了。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">陳美玲</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          品質很好，水果特別甜，但有時候熱門商品很快就賣完，希望能多補貨！
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">張志強</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          這間店的服務態度超棒，老闆還會推薦當季最好的水果，CP
+                          值超高！
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">劉雅雯</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          東西還不錯，但送貨時間有點久，建議店家改進。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">林建宏</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          買過幾次，偶爾會買到不太新鮮的蔬菜，希望店家能更嚴格挑選。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="swiper-slide idx-comment-item">
+                    <div className="row g-0">
+                      <div className="card-header">
+                        <img
+                          src="../images/index/avatar_default.png"
+                          alt="*"
+                          className="rounded-circle object-fit-cover author-img"
+                          width="60px"
+                          height="60px"
+                        />
+                        <div className="name-rank">
+                          <span className="fullname">鄭惠君</span>
+                          <div className="rank-star">
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                            <img
+                              src="../images/icon/star-yellow.svg"
+                              className="star"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-body">
+                        <p className="card-text">
+                          我超愛這家店！種類豐富，特價商品也很多，買水果真的很划算！
                         </p>
                       </div>
                     </div>
