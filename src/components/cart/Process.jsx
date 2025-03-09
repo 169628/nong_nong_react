@@ -1,27 +1,30 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Toast } from "../../components/common/Toast";
+import { pushToast } from "../../slice/toastSlice";
+import { asyncCart } from "../../slice/cartSlice";
 
 function Process({ setStep }) {
-  const user = {
-    id: "6776a26276e2f6e0ea3a680f",
-    token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NzZhMjYyNzZlMmY2ZTBlYTNhNjgwZiIsIm5hbWUiOiLnvqnlpKfliKnpu5HmiYvpu6giLCJpYXQiOjE3NDA3MDg5NzMsImV4cCI6MTc0MTMxMzc3M30.JlbMypKCTpNIDE08wA81Avu-1FiCIrktzHWWL3Mrr1w",
-  };
+  const dispatch = useDispatch();
+  const { userId } = useSelector((state) => state.user);
 
   const pay = async () => {
     try {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
       const result = await axios.post(
-        `${import.meta.env.VITE_APP_URL}/carts/pay/${user.id}`
+        `${import.meta.env.VITE_APP_URL}/carts/pay/${userId}`
       );
       if (result.data.result == 1) {
+        dispatch(asyncCart());
         setStep("finish");
       }
     } catch (error) {
       console.log(error);
-      toast.error("結帳失敗");
+      dispatch(
+        pushToast({
+          type: "error",
+          message: "結帳失敗",
+        })
+      );
       setStep("confirm");
     }
   };
@@ -51,7 +54,6 @@ function Process({ setStep }) {
             </button>
           </div>
         </div>
-        <Toast />
       </div>
     </>
   );

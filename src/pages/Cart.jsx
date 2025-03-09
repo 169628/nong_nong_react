@@ -1,6 +1,8 @@
-import { useState } from "react";
-import RiseLoader from "react-spinners/RiseLoader";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
+import { pushToast } from "../slice/toastSlice";
 import ProgressBar from "../components/cart/ProgressBar";
 import Order from "../components/cart/Order";
 import CartConfirm from "../components/cart/CartConfirm";
@@ -10,19 +12,33 @@ import Finish from "../components/cart/Finish";
 
 function Cart() {
   const [step, setStep] = useState("confirm");
-  const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [delivery, setDelivery] = useState("宅配");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(
+        pushToast({
+          type: "error",
+          message: "請先登入會員",
+        })
+      );
+      navigate("/");
+    }
+  }, []);
+
   return (
     <>
       <div className="container">
         <ProgressBar step={step} />
-
         {step == "confirm" && (
           <div className="row mt-md-26">
             <CartConfirm
               setStep={setStep}
-              setLoading={setLoading}
               setTotal={setTotal}
               delivery={delivery}
               setDelivery={setDelivery}
