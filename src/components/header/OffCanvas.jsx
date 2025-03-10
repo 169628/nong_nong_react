@@ -139,7 +139,7 @@ function OffCanvas() {
                   <Dropdown.Toggle
                     as={Button}
                     variant="primary"
-                    className="rounded-circle mt-2 btn-primary-500"
+                    className="rounded-circle  btn-primary-500"
                     id="dropdown-user-menu"
                   >
                     <i className="bi bi-person fs-5"></i>
@@ -154,7 +154,7 @@ function OffCanvas() {
           ) : (
             <li>
               <Button
-                className="border-0 bg-tertiary-500 py-2 text-white fs-6 fw-semibold"
+                className="border-0 bg-tertiary-500 py-2 text-white fs-6 rounded-pill"
                 variant="primary"
                 onClick={(e) => {
                   e.preventDefault();
