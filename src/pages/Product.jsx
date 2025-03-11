@@ -190,7 +190,10 @@ function Product() {
                               setNum(num - 1);
                             }}
                           >
-                            <img src="/images/icon/decrease.svg" alt="-" />
+                            <img
+                              src="/nong_nong_react/images/icon/decrease.svg"
+                              alt="-"
+                            />
                           </button>
                           <input
                             type="text"
@@ -205,7 +208,10 @@ function Product() {
                               setNum(num + 1);
                             }}
                           >
-                            <img src="/images/icon/increase.svg" alt="+" />
+                            <img
+                              src="/nong_nong_react/images/icon/increase.svg"
+                              alt="+"
+                            />
                           </button>
                         </div>
                       </li>
@@ -220,7 +226,10 @@ function Product() {
                         className="btn btn-secondary100 fs-5"
                         onClick={handleModal}
                       >
-                        <img src="/images/icon/box.svg" alt="box" />
+                        <img
+                          src="/nong_nong_react/images/icon/box.svg"
+                          alt="box"
+                        />
                         查詢庫存
                       </button>
                     </div>
@@ -231,7 +240,7 @@ function Product() {
                         onClick={addToCart}
                       >
                         <img
-                          src="/images/icon/cart-secondary100.svg"
+                          src="/nong_nong_react/images/icon/cart-secondary100.svg"
                           alt="cart"
                         />
                         加入購物車
@@ -255,7 +264,10 @@ function Product() {
           {/* 商品介紹 */}
           <section className="container introduce mb-26">
             <div className="title mb-17 d-flex justify-content-center">
-              <img src="/images/icon/small-leaf.svg" alt="small-leaf" />
+              <img
+                src="/nong_nong_react/images/icon/small-leaf.svg"
+                alt="small-leaf"
+              />
               <h2
                 id="productIntroduce"
                 className="fs-2 text-secondary-700 fw-bold mb-0 mx-13"
@@ -264,7 +276,7 @@ function Product() {
               </h2>
               <img
                 className="revert"
-                src="/images/icon/small-leaf.svg"
+                src="/nong_nong_react/images/icon/small-leaf.svg"
                 alt="small-leaf"
               />
             </div>
@@ -411,7 +423,7 @@ function Product() {
               <div className="farm-picture position-relative">
                 <img
                   className="bg-farm"
-                  src="/images/product/farm_intro.png"
+                  src="/nong_nong_react/images/product/farm_intro.png"
                   alt="小農園"
                 />
                 <div className="farm-owner">
@@ -453,7 +465,10 @@ function Product() {
           <section className="comment py-26 mb-26">
             <div className="container">
               <div className="title mb-17 d-flex justify-content-center">
-                <img src="/images/icon/rice_ears.png" alt="rice-ears" />
+                <img
+                  src="/nong_nong_react/images/icon/rice_ears.png"
+                  alt="rice-ears"
+                />
                 <h2
                   id="productComment"
                   className="fs-2 text-primary-500 fw-bold mb-0 mx-6"
@@ -462,7 +477,7 @@ function Product() {
                 </h2>
                 <img
                   className="revert"
-                  src="/images/icon/rice_ears.png"
+                  src="/nong_nong_react/images/icon/rice_ears.png"
                   alt="rice-ears"
                 />
               </div>
@@ -472,7 +487,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -482,27 +497,27 @@ function Product() {
                           <span className="fullname">Andrew</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -519,7 +534,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -529,23 +544,23 @@ function Product() {
                           <span className="fullname">張小姐</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -562,7 +577,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -572,23 +587,23 @@ function Product() {
                           <span className="fullname">花媽</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -605,7 +620,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -615,23 +630,23 @@ function Product() {
                           <span className="fullname">王小明</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -648,7 +663,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -658,19 +673,19 @@ function Product() {
                           <span className="fullname">陳美玲</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -687,7 +702,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -697,19 +712,19 @@ function Product() {
                           <span className="fullname">張志強</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -727,7 +742,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -737,15 +752,15 @@ function Product() {
                           <span className="fullname">劉雅雯</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -762,7 +777,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -772,11 +787,11 @@ function Product() {
                           <span className="fullname">林建宏</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -793,7 +808,7 @@ function Product() {
                     <div className="row g-0">
                       <div className="card-header">
                         <img
-                          src="../images/index/avatar_default.png"
+                          src="/nong_nong_react/images/index/avatar_default.png"
                           alt="*"
                           className="rounded-circle object-fit-cover author-img"
                           width="60px"
@@ -803,23 +818,23 @@ function Product() {
                           <span className="fullname">鄭惠君</span>
                           <div className="rank-star">
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                             <img
-                              src="../images/icon/star-yellow.svg"
+                              src="/nong_nong_react/images/icon/star-yellow.svg"
                               className="star"
                             />
                           </div>
@@ -842,14 +857,18 @@ function Product() {
           {/* 購物須知 */}
           <section className="container instructions">
             <div className="title mb-17 d-flex justify-content-center">
-              <img src="/images/icon/hat.svg" alt="hat" />
+              <img src="/nong_nong_react/images/icon/hat.svg" alt="hat" />
               <h2
                 id="shoppingInstructions"
                 className="fs-2 text-primary-500 fw-bold mb-0 mx-13"
               >
                 購物須知
               </h2>
-              <img className="revert" src="/images/icon/hat.svg" alt="hat" />
+              <img
+                className="revert"
+                src="/nong_nong_react/images/icon/hat.svg"
+                alt="hat"
+              />
             </div>
             <div>
               <ol className="instructions-list pl-0">

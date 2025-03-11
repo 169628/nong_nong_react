@@ -16,7 +16,7 @@ function Footer() {
                   <Link to="">
                     <img
                       className="footer-logo"
-                      src="../images/logo/logo_default_white.png"
+                      src="/nong_nong_react/images/logo/logo_default_white.png"
                       alt="農農自然Logo"
                     />
                   </Link>

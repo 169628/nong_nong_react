@@ -9,12 +9,12 @@ function Header() {
         <Link className="m-0 p-0" to="/">
           <picture>
             <source
-              srcSet="/images/logo/logo_horizontal.png"
+              srcSet="/nong_nong_react/images/logo/logo_horizontal.png"
               media="(max-width: 767px)"
             />
             <img
               className="img-fluid header-logo"
-              src="/images/logo/logo_horizontal.png"
+              src="/nong_nong_react/images/logo/logo_horizontal.png"
               alt="banner"
             />
           </picture>

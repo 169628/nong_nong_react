@@ -169,7 +169,7 @@ function CartConfirm({ setStep, setTotal, delivery, setDelivery }) {
             <div className="text-secondary-700 d-flex">
               <div className="cart-icon-vector">
                 <img
-                  src="/images/icon/Vector.png"
+                  src="/nong_nong_react/images/icon/Vector.png"
                   className="img-fluid"
                   alt="vector photo"
                 />
@@ -217,7 +217,7 @@ function CartConfirm({ setStep, setTotal, delivery, setDelivery }) {
                           {item.tags?.productType?.includes("捐贈") && (
                             <div className="cart-icon-vector">
                               <img
-                                src="/images/icon/Vector.png"
+                                src="/nong_nong_react/images/icon/Vector.png"
                                 className="img-fluid"
                                 alt="vector photo"
                               />

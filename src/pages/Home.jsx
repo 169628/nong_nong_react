@@ -323,18 +323,18 @@ function Home() {
               <picture>
                 <source
                   media="(min-width: 375px)"
-                  srcSet="../images/index/banner/banner-01.png"
+                  srcSet="/nong_nong_react/images/index/banner/banner-01.png"
                 />
-                <img src="../images/index/banner/banner-mobile-01.png" />
+                <img src="/nong_nong_react/images/index/banner/banner-mobile-01.png" />
               </picture>
             </div>
             <div className="swiper-slide">
               <picture>
                 <source
                   media="(min-width: 375px)"
-                  srcSet="../images/index/banner/banner-02.png"
+                  srcSet="/nong_nong_react/images/index/banner/banner-02.png"
                 />
-                <img src="../images/index/banner/banner-mobile-02.png" />
+                <img src="/nong_nong_react/images/index/banner/banner-mobile-02.png" />
               </picture>
             </div>
           </div>
@@ -441,7 +441,7 @@ function Home() {
             <div className="idx-product-cat d-flex justify-content-between mb-md-13 mb-6">
               <div className="idx-cat-name d-flex align-items-center">
                 <img
-                  src="../images/icon/rice_ears.png"
+                  src="/nong_nong_react/images/icon/rice_ears.png"
                   className="me-2 me-md-6"
                 />
                 <h2 className="text-primary-500 fs-4 fs-md-2 fw-700">
@@ -547,7 +547,7 @@ function Home() {
             <div className="idx-product-cat d-flex justify-content-between mb-md-13 mb-6">
               <div className="idx-cat-name d-flex align-items-center">
                 <img
-                  src="../images/icon/rice_ears.png"
+                  src="/nong_nong_react/images/icon/rice_ears.png"
                   className="me-2 me-md-6"
                 />
                 <h2 className="text-primary-500 fs-4 fs-md-2 fw-700">
@@ -652,13 +652,16 @@ function Home() {
             <div className="idx-product-cat d-flex justify-content-center mb-md-13 mb-6">
               <div className="idx-cat-name d-flex">
                 <img
-                  src="../images/icon/patten_left.png"
+                  src="/nong_nong_react/images/icon/patten_left.png"
                   className="me-10 me-md-13"
                 />
                 <h2 className="text-secondary-700 fs-4 me-10 me-md-13">
                   傳遞心意
                 </h2>
-                <img src="../images/icon/patten_right.png" className="me-1" />
+                <img
+                  src="/nong_nong_react/images/icon/patten_right.png"
+                  className="me-1"
+                />
               </div>
             </div>
 
@@ -906,11 +909,14 @@ function Home() {
       <div className="idx-comment mb-28 mb-md-29">
         <div className="container">
           <div className="text-center idx-comment-title mb-2 mb-md-10">
-            <img src="../images/icon/pattan.png" className="me-10 me-md-13" />
+            <img
+              src="/nong_nong_react/images/icon/pattan.png"
+              className="me-10 me-md-13"
+            />
             <h2 className="fs-4 fs-md-2 text-primary-700 me-10 me-md-13">
               客人好評
             </h2>
-            <img src="../images/icon/pattan.png" alt="" />
+            <img src="/nong_nong_react/images/icon/pattan.png" alt="" />
           </div>
           <div className="text-center idx-comment-brief text-gary-500">
             <p className="mb-1">
@@ -924,7 +930,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -934,27 +940,27 @@ function Home() {
                       <span className="fullname">林依依</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -971,7 +977,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -981,23 +987,23 @@ function Home() {
                       <span className="fullname">埔里餐間有機</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -1014,7 +1020,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -1024,23 +1030,23 @@ function Home() {
                       <span className="fullname">Mike</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -1057,7 +1063,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -1067,19 +1073,19 @@ function Home() {
                       <span className="fullname">王曉明</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -1096,7 +1102,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -1106,19 +1112,19 @@ function Home() {
                       <span className="fullname">冰鄉在你家</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -1135,7 +1141,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -1145,15 +1151,15 @@ function Home() {
                       <span className="fullname">李大大</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -1170,7 +1176,7 @@ function Home() {
                 <div className="row g-0">
                   <div className="card-header">
                     <img
-                      src="../images/index/avatar_default.png"
+                      src="/nong_nong_react/images/index/avatar_default.png"
                       alt="*"
                       className="rounded-circle object-fit-cover author-img"
                       width="60px"
@@ -1180,23 +1186,23 @@ function Home() {
                       <span className="fullname">林如意</span>
                       <div className="rank-star">
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                         <img
-                          src="../images/icon/star-yellow.svg"
+                          src="/nong_nong_react/images/icon/star-yellow.svg"
                           className="star"
                         />
                       </div>
@@ -1221,13 +1227,16 @@ function Home() {
           <div className="idx-about-title d-flex justify-content-center mb-md-13 mb-6">
             <div className="idx-cat-name d-flex">
               <img
-                src="../images/icon/patten_left.png"
+                src="/nong_nong_react/images/icon/patten_left.png"
                 className="me-10 me-md-13"
               />
               <h2 className="text-secondary-700 fs-4 me-10 me-md-13">
                 關於我們
               </h2>
-              <img src="../images/icon/patten_right.png" className="me-1" />
+              <img
+                src="/nong_nong_react/images/icon/patten_right.png"
+                className="me-1"
+              />
             </div>
           </div>
           <div className="text-center idx-about-brief text-gary-500">
@@ -1244,7 +1253,7 @@ function Home() {
                 data-aos-delay="150"
               >
                 <img
-                  src="../images/index/avatar_default.png"
+                  src="/nong_nong_react/images/index/avatar_default.png"
                   alt="*"
                   className="rounded-circle object-fit-cover author-img"
                   width="60px"
@@ -1279,7 +1288,7 @@ function Home() {
                 data-aos-delay="150"
               >
                 <img
-                  src="../images/index/avatar_default.png"
+                  src="/nong_nong_react/images/index/avatar_default.png"
                   alt="*"
                   className="rounded-circle object-fit-cover author-img"
                   width="60px"
@@ -1312,7 +1321,7 @@ function Home() {
                 data-aos-delay="200"
               >
                 <img
-                  src="../images/index/avatar_default.png"
+                  src="/nong_nong_react/images/index/avatar_default.png"
                   alt="*"
                   className="rounded-circle object-fit-cover author-img"
                   width="60px"
@@ -1366,7 +1375,11 @@ function Home() {
         </Modal.Header>
         <Modal.Body>
           {/* Modal content goes here */}
-          <img src="../images/index/popup.png" className="" alt="廣告" />
+          <img
+            src="/nong_nong_react/images/index/popup.png"
+            className=""
+            alt="廣告"
+          />
         </Modal.Body>
       </Modal>
     </>
