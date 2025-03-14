@@ -153,13 +153,13 @@ function Products() {
                       >
                         <div className="goods-item">
                           <div className="img-box">
-                            <a href={`/#/product/${product._id}`}>
+                            <Link to={`/product/${product._id}`}>
                               <img
                                 src={product.image}
                                 className="card-img-top goods-pic"
                                 alt="..."
                               />
-                            </a>
+                            </Link>
                             {product.tags.productType.length > 0 ? (
                               <div className="tag-cat-list">
                                 {product.tags.productType.map((cat, idx) => (
@@ -185,11 +185,11 @@ function Products() {
                           </div>
 
                           <div className="card-body">
-                            <a href={`/#/product/${product._id}`}>
+                            <Link to={`/product/${product._id}`}>
                               <h3 className="card-title mb-1">
                                 {product.name}
                               </h3>
-                            </a>
+                            </Link>
                             <span className="text-gary-500 mb-2">
                               {product.unit}
                             </span>
