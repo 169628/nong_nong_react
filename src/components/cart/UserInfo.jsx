@@ -172,7 +172,7 @@ function UserInfo({ setStep, delivery }) {
                   id="buyer-name"
                   name="name"
                   type="text"
-                  className="cart-input-form cart-input-form-info"
+                  className="cart-input-form text-black cart-input-form-info"
                   placeholder="請輸入真實姓名"
                   value={order.name}
                   onChange={handleOrder}
@@ -194,7 +194,7 @@ function UserInfo({ setStep, delivery }) {
                   id="buyer-phone"
                   name="tel"
                   type="text"
-                  className="cart-input-form cart-input-form-info"
+                  className="cart-input-form text-black cart-input-form-info"
                   placeholder="0912345678"
                   value={order.tel}
                   onChange={handleOrder}
@@ -213,7 +213,7 @@ function UserInfo({ setStep, delivery }) {
                   id="buyer-email"
                   name="email"
                   type="text"
-                  className="cart-input-form cart-input-form-info"
+                  className="cart-input-form text-black cart-input-form-info"
                   placeholder="example@mail.com"
                   value={order.email}
                   onChange={handleOrder}
@@ -266,7 +266,7 @@ function UserInfo({ setStep, delivery }) {
                   <input
                     id="recipient-name"
                     type="text"
-                    className="cart-input-form cart-input-form-info"
+                    className="cart-input-form text-black cart-input-form-info"
                     placeholder="請輸入真實姓名"
                     name="name"
                     value={receive.name}
@@ -285,7 +285,7 @@ function UserInfo({ setStep, delivery }) {
                   <input
                     id="recipient-phone"
                     type="text"
-                    className="cart-input-form cart-input-form-info"
+                    className="cart-input-form text-black cart-input-form-info"
                     placeholder="0912345678"
                     name="tel"
                     value={receive.tel}
@@ -304,7 +304,7 @@ function UserInfo({ setStep, delivery }) {
                   <input
                     id="recipient-email"
                     type="text"
-                    className="cart-input-form cart-input-form-info"
+                    className="cart-input-form text-black cart-input-form-info"
                     placeholder="example@mail.com"
                     name="email"
                     value={receive.email}
@@ -323,7 +323,7 @@ function UserInfo({ setStep, delivery }) {
                   <input
                     id="recipient-postalcode"
                     type="text"
-                    className="cart-input-form cart-input-form-info"
+                    className="cart-input-form text-black cart-input-form-info"
                     placeholder="00000"
                     name="code"
                     value={receive.code}
@@ -342,7 +342,7 @@ function UserInfo({ setStep, delivery }) {
                   <input
                     id="recipient-address"
                     type="text"
-                    className="cart-input-form cart-input-form-info"
+                    className="cart-input-form text-black cart-input-form-info"
                     name="address"
                     value={receive.address}
                     onChange={handleReceive}
@@ -473,7 +473,7 @@ function UserInfo({ setStep, delivery }) {
                 <input
                   id="invoice-carrier"
                   type="text"
-                  className="cart-input-form cart-input-form-info"
+                  className="cart-input-form text-black cart-input-form-info"
                   placeholder="/123ABCD"
                 />
                 <div className="py-1 text-gary-500 cart-info-li-text">
@@ -487,7 +487,7 @@ function UserInfo({ setStep, delivery }) {
                 <input
                   id="invoice-taxId"
                   type="text"
-                  className="cart-input-form cart-input-form-info"
+                  className="cart-input-form text-black cart-input-form-info"
                   placeholder="請輸入統一編號"
                 />
               </div>
@@ -518,7 +518,7 @@ function UserInfo({ setStep, delivery }) {
             placeholder="若有購買的特殊需求，請填寫備註"
             cols="20"
             rows="5"
-            className="cart-input-form cart-input-form-info"
+            className="cart-input-form text-black cart-input-form-info"
           ></textarea>
         </div>
         <div className="payments">
