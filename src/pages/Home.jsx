@@ -1365,7 +1365,6 @@ function Home() {
       >
         <Modal.Header>
           <button
-            variant="secondary"
             className="btn-close d-flex justify-content-start align-items-center me-14"
             onClick={handleClose}
           >

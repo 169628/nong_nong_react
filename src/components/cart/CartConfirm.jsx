@@ -7,7 +7,11 @@ import RiseLoader from "react-spinners/RiseLoader";
 import { pushToast } from "../../slice/toastSlice";
 import { asyncCart } from "../../slice/cartSlice";
 
-function CartConfirm({ setStep, setTotal, delivery, setDelivery }) {
+// eslint-disable-next-line react/prop-types
+function CartConfirm({ setStep, setTotal, delivery, setDelivery, total }) {
+  const orderPrice = total || 0;
+  const deliveryFee = delivery == "自取" ? 0 : 60;
+
   const [loading, setLoading] = useState(false);
   const [cart, setCart] = useState([]);
   const [donate, setDonate] = useState(false);
@@ -163,9 +167,9 @@ function CartConfirm({ setStep, setTotal, delivery, setDelivery }) {
       ) : (
         <div className="col col-lg-8 d-flex flex-column gap-26">
           <div className="buyer">
-            <div className="fs-2 text-primary-700 fw-bold mb-15">
+            <h4 className="mt-26 mt-lg-0 fs-4 fs-md-2 text-primary-700 fw-bold">
               購物車內容
-            </div>
+            </h4>
             <div className="text-secondary-700 d-flex">
               <div className="cart-icon-vector">
                 <img
@@ -176,206 +180,252 @@ function CartConfirm({ setStep, setTotal, delivery, setDelivery }) {
               </div>
               <p className="fs-6 fw-medium">表示購物項目屬於捐贈區商品</p>
             </div>
-            {/* <div className="row row-cols-1 row-cols-lg-2"> */}
+            {/* <div className="row"> */}
             <div className="row">
               <div className="col-6 d-none d-lg-block">
                 <p className="text-center bg-primary-100 rounded-3 fs-6 py-4 m-0">
                   項目
                 </p>
               </div>
-              <div className="col-3 d-none d-lg-block">
-                <p className="text-center bg-primary-100 rounded-3 fs-6 py-4 m-0">
-                  數量
-                </p>
+              <div className="col d-none d-lg-block">
+                <div className="row">
+                  <div className="col">
+                    <p className="text-center bg-primary-100 rounded-3 fs-6 py-4 m-0">
+                      數量
+                    </p>
+                  </div>
+                  <div className="col">
+                    <p className="text-center bg-primary-100 rounded-3 fs-6 py-4 m-0">
+                      小計
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              <div className="col-3">
-                <p className="text-center bg-primary-100 rounded-3 fs-6 py-4 m-0">
-                  小計
-                </p>
-              </div>
-
-              {cart.map((item) => {
-                return (
-                  <div className="row" key={item._id}>
-                    <div className="col d-flex pt-13 pb-10 px-lg-10 pt-md-10 pb-lg-0">
-                      <div className="cart-product-photo overflow-hidden rounded-3">
-                        <img
-                          src={item.image}
-                          className="img-fluid"
-                          alt="wendan"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      </div>
-                      <ul className="list-unstyled ms-4">
-                        <li className="d-flex">
-                          <p className="m-0 fs-5 me-2">{item.name}</p>
-                          {item.tags?.productType?.includes("捐贈") && (
-                            <div className="cart-icon-vector">
-                              <img
-                                src="/nong_nong_react/images/icon/Vector.png"
-                                className="img-fluid"
-                                alt="vector photo"
-                              />
-                            </div>
-                          )}
-                        </li>
-                        <li className="mt-1">
-                          <p className="m-0 fs-6 text-gary-500">{item.unit}</p>
-                        </li>
-                        <li className="mt-1 d-flex">
-                          <p className="m-0 fs-6 text-gary-500 me-4">單價</p>
-                          <p className="m-0 fs-6 text-gary-500">
-                            NT.{item.price}
-                          </p>
-                        </li>
-                      </ul>
+            </div>
+            {cart.map((item) => {
+              return (
+                <div className="row" key={item._id}>
+                  <div className="col-md-6 d-flex pt-13 pb-10 px-lg-10 pt-md-10 pb-lg-0">
+                    <div className="cart-product-photo overflow-hidden rounded-3">
+                      <img
+                        src={item.image}
+                        className="img-fluid"
+                        alt="wendan"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
                     </div>
-                    <div className="col">
-                      <div className="row h-100">
-                        <div className="col-6 d-flex align-items-center">
-                          <ul className="d-flex justify-content-between border border-gary-500 rounded-1 p-0 py-1 list-unstyled w-100">
-                            <li>
-                              <a
-                                href="#"
-                                className={`p-2 text-gary-500 ${
-                                  item.qty == 1 ? "disabled" : ""
+                    <ul className="list-unstyled ms-4">
+                      <li className="d-flex">
+                        <p className="m-0 fs-5 me-2">{item.name}</p>
+                        {item.tags?.productType?.includes("捐贈") && (
+                          <div className="cart-icon-vector">
+                            <img
+                              src="/nong_nong_react/images/icon/Vector.png"
+                              className="img-fluid"
+                              alt="vector photo"
+                            />
+                          </div>
+                        )}
+                      </li>
+                      <li className="mt-1">
+                        <p className="m-0 fs-6 text-gary-500">{item.unit}</p>
+                      </li>
+                      <li className="mt-1 d-flex">
+                        <p className="m-0 fs-6 text-gary-500 me-4">單價</p>
+                        <p className="m-0 fs-6 text-gary-500">
+                          NT.{item.price}
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="row h-100">
+                      <div className="col-6 d-flex align-items-center">
+                        <ul className="d-flex justify-content-between border border-gary-500 rounded-1 p-0 py-1 list-unstyled w-100">
+                          <li>
+                            <a
+                              href="#"
+                              className={`p-2 text-gary-500 ${item.qty == 1 ? "disabled" : ""
                                 }`}
-                                onClick={(e) => {
-                                  changeQty(e, item._id, item.qty - 1);
-                                }}
-                              >
-                                <i className="bi bi-dash"></i>
-                              </a>
-                            </li>
-                            <li className="fs-6">{item.qty}</li>
-                            <li>
-                              <a
-                                href="#"
-                                className="p-2 text-gary-500"
-                                onClick={(e) => {
-                                  changeQty(e, item._id, item.qty + 1);
-                                }}
-                              >
-                                <i className="bi bi-plus"></i>
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="col-6 d-flex justify-content-end align-items-center">
-                          <p className="m-0 fs-5 fw-medium cart-price-color">
-                            NT. {item.price * item.qty}
-                          </p>
-                        </div>
+                              onClick={(e) => {
+                                changeQty(e, item._id, item.qty - 1);
+                              }}
+                            >
+                              <i className="bi bi-dash"></i>
+                            </a>
+                          </li>
+                          <li className="fs-6">{item.qty}</li>
+                          <li>
+                            <a
+                              href="#"
+                              className="p-2 text-gary-500"
+                              onClick={(e) => {
+                                changeQty(e, item._id, item.qty + 1);
+                              }}
+                            >
+                              <i className="bi bi-plus"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="col-6 d-flex justify-content-end align-items-center">
+                        <p className="m-0 fs-5 fw-medium cart-price-color">
+                          NT. {item.price * item.qty}
+                        </p>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
 
-              <div className="col-6 pt-19 pt-md-15">
-                <p className="text-gary-500 fs-6 fs-md-5 m-0">運送方式</p>
-                <div className="mt-6 d-flex justify-content-between d-md-inline-flex">
-                  <button
-                    type="button"
-                    className={`btn btn-outline-gary-500 py-4 px-13 fs-6 fw-medium me-md-10 cart-btn-hover ${
-                      !donate && "disabled"
-                    } ${delivery == "捐贈" && "active"}`}
-                    onClick={() => {
-                      setDelivery("捐贈");
-                    }}
-                  >
-                    捐贈
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn btn-outline-gary-500 py-4 px-13 fs-6 fw-medium me-md-10 cart-btn-hover ${
-                      delivery == "宅配" && "active"
-                    }`}
-                    onClick={() => {
-                      setDelivery("宅配");
-                    }}
-                  >
-                    宅配
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn btn-outline-gary-500 py-4 px-6 fs-6 fw-medium cart-btn-hover ${
-                      delivery == "自取" && "active"
-                    }`}
-                    onClick={() => {
-                      setDelivery("自取");
-                    }}
-                  >
-                    倉庫自取
-                  </button>
+
+            <div className="row">
+              <div className="row row-cols-1 row-cols-lg-2">
+                <div className="col pt-19 pt-md-15">
+                  <p className="text-gary-500 fs-6 fs-md-5 m-0">運送方式</p>
+                  <div className="mt-6 d-flex justify-content-between d-md-inline-flex">
+                    <button
+                      type="button"
+                      className={`btn btn-outline-gary-500 py-4 px-13 fs-6 fw-medium me-md-10 cart-btn-hover ${!donate && "disabled"
+                        } ${delivery == "捐贈" && "active"}`}
+                      onClick={() => {
+                        setDelivery("捐贈");
+                      }}
+                    >
+                      捐贈
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-outline-gary-500 py-4 px-13 fs-6 fw-medium me-md-10 cart-btn-hover ${delivery == "宅配" && "active"
+                        }`}
+                      onClick={() => {
+                        setDelivery("宅配");
+                      }}
+                    >
+                      宅配
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-outline-gary-500 py-4 px-6 fs-6 fw-medium cart-btn-hover ${delivery == "自取" && "active"
+                        }`}
+                      onClick={() => {
+                        setDelivery("自取");
+                      }}
+                    >
+                      倉庫自取
+                    </button>
+                  </div>
+                  {!donate && (
+                    <p className="cart-alert-text mt-2 d-none d-md-flex">
+                      如欲捐贈，購物車內不可有不屬於捐贈區的商品
+                    </p>
+                  )}
                 </div>
-                {!donate && (
-                  <p className="cart-alert-text mt-2 d-none d-md-flex">
-                    如欲捐贈，購物車內不可有不屬於捐贈區的商品
-                  </p>
-                )}
-              </div>
-              <div className="col-6 d-none d-md-block"></div>
-              <div className="col-6 pt-8 pt-md-10">
-                <label
-                  htmlFor="discount"
-                  className="text-gary-500 fs-6 fs-md-5"
-                >
-                  優惠折扣碼
-                </label>
-                <div className="mt-6 d-flex justify-content-between">
-                  <input
-                    id="discount"
-                    type="text"
-                    className="cart-input-form"
-                    placeholder="全館促銷暫不提供折扣優惠"
-                    readOnly
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-outline-gary-500 py-3 px-10 fs-6 cart-btn-hover"
-                  >
-                    使用
-                  </button>
-                </div>
-              </div>
-              <div className="col pt-8 pt-md-10">
-                <div className="d-flex">
+                <div className="col d-none d-md-block"></div>
+                <div className="col pt-8 pt-md-10">
                   <label
                     htmlFor="discount"
-                    className="text-gary-500 fs-6 fs-md-5 me-2"
+                    className="text-gary-500 fs-6 fs-md-5"
                   >
-                    紅利點數可折抵
+                    優惠折扣碼
                   </label>
-                  {/* <p className="text-secondary-700 fs-6 fs-md-5 fs-medium">
-                  NT. 24
+                  <div className="mt-6 d-flex justify-content-between">
+                    <input
+                      id="discount"
+                      type="text"
+                      className="cart-input-form"
+                      placeholder="全館促銷暫不提供折扣優惠"
+                      readOnly
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-gary-500 py-3 px-10 fs-6 cart-btn-hover"
+                    >
+                      使用
+                    </button>
+                  </div>
+                </div>
+                <div className="col pt-8 pt-md-10">
+                  <div className="d-flex">
+                    <label
+                      htmlFor="discount"
+                      className="text-gary-500 fs-6 fs-md-5 me-2"
+                    >
+                      紅利點數可折抵
+                    </label>
+                    {/* <p className="text-secondary-700 fs-6 fs-md-5 fs-medium">
+                    NT. 24
+                  </p> */}
+                  </div>
+                  <div className="mt-6 d-flex justify-content-between">
+                    <input
+                      id="discount"
+                      type="text"
+                      className="cart-input-form"
+                      placeholder="全館促銷暫不提供紅利折抵"
+                      readOnly
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-gary-500 py-3 px-10 fs-6 cart-btn-hover"
+                    >
+                      使用
+                    </button>
+                  </div>
+                  {/* <p className="cart-alert-text d-none d-md-block">
+                  持有的紅利點數不足
                 </p> */}
                 </div>
-                <div className="mt-6 d-flex justify-content-between">
-                  <input
-                    id="discount"
-                    type="text"
-                    className="cart-input-form"
-                    placeholder="全館促銷暫不提供紅利折抵"
-                    readOnly
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-outline-gary-500 py-3 px-10 fs-6 cart-btn-hover"
-                  >
-                    使用
-                  </button>
-                </div>
-                {/* <p className="cart-alert-text d-none d-md-block">
-                持有的紅利點數不足
-              </p> */}
               </div>
             </div>
+
+            <div className="d-block d-lg-none pt-13 pb-15">
+              <p
+                className="m-0 fs-6 fw-medium py-4 text-white text-center bg-primary-300 cart-info-top-border"
+              >
+                訂單摘要
+              </p>
+              <div className="bg-white cart-info-bottom-border p-10 px-lg-13">
+                <ul className="list-unstyled p-0">
+                  <li className="d-flex justify-content-between mb-10">
+                    <span className="text-gary-500">商品總金額</span
+                    ><span className="text-gary-500">NT. {orderPrice}</span>
+                  </li>
+                  {delivery == "自取" ? (
+                    ""
+                  ) : (
+                    <li className="d-flex justify-content-between mb-10">
+                      <span className="text-gary-500">運費總金額</span>
+                      <span className="text-gary-500">NT. 60</span>
+                    </li>
+                  )}
+                  <li className="d-flex justify-content-between mb-10">
+                    <span className="text-gary-500">全館促銷</span>
+                    <span className="text-primary-500">9折</span>
+                  </li>
+                </ul>
+                <div
+                  className="d-flex justify-content-between align-items-center border-top border-gary-500 pt-10 pb-6"
+                >
+                  <span className="text-gary-500 cart-total-price-font"
+                  >結帳總金額</span
+                  ><span className="text-primary-500 fs-4 fw-bold">$ {Math.round((orderPrice + deliveryFee) * 0.9)}</span>
+                </div>
+                <div
+                  className="d-flex justify-content-between align-items-center cart-info-bgcolor py-8 px-6"
+                >
+                  <span className="text-gary-500 cart-info-li-text"
+                  >此筆訂單捐贈後可獲得紅利</span
+                  ><span className="text-primary-300 fs-6 fw-bold">{Math.round(Math.round((orderPrice + deliveryFee) * 0.9) / 100)}{" "} 點</span>
+                </div>
+              </div>
+            </div>
+
 
             <div className="cart-info-bgcolor p-10 mt-lg-10">
               <p className="text-primary-300 fw-bold">

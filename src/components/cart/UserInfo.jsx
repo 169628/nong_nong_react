@@ -3,7 +3,10 @@ import validator from "validator";
 import { useDispatch, useSelector } from "react-redux";
 import { pushToast } from "../../slice/toastSlice";
 
-function UserInfo({ setStep, delivery }) {
+function UserInfo({ setStep, delivery, total }) {
+  const orderPrice = total || 0;
+  const deliveryFee = delivery == "自取" ? 0 : 60;
+
   const [bill, setBill] = useState("電子");
   const [pay, setPay] = useState("信用卡");
   const { userName } = useSelector((state) => state.user);
@@ -413,9 +416,8 @@ function UserInfo({ setStep, delivery }) {
             <div className="mb-15 mt-6 d-flex gap-10 flex-wrap">
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  bill == "紙本" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${bill == "紙本" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setBill("紙本");
@@ -425,9 +427,8 @@ function UserInfo({ setStep, delivery }) {
               </button>
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  bill == "電子" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${bill == "電子" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setBill("電子");
@@ -437,9 +438,8 @@ function UserInfo({ setStep, delivery }) {
               </button>
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  bill == "三聯式" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${bill == "三聯式" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setBill("三聯式");
@@ -449,9 +449,8 @@ function UserInfo({ setStep, delivery }) {
               </button>
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  bill == "捐贈" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${bill == "捐贈" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setBill("捐贈");
@@ -522,8 +521,7 @@ function UserInfo({ setStep, delivery }) {
           ></textarea>
         </div>
         <div className="payments">
-          <div className="fs-2 text-primary-700 fw-bold mb-15">付款方式</div>
-          {/* <div className="d-block d-lg-none pt-13 pb-15">
+          <div className="d-block d-lg-none pt-13 pb-15">
             <p className="m-0 fs-6 fw-medium py-4 text-white text-center bg-primary-300 cart-info-top-border">
               訂單摘要
             </p>
@@ -531,43 +529,44 @@ function UserInfo({ setStep, delivery }) {
               <ul className="list-unstyled p-0">
                 <li className="d-flex justify-content-between mb-10">
                   <span className="text-gary-500">商品總金額</span>
-                  <span className="text-gary-500">NT. 1,552</span>
+                  <span className="text-gary-500">NT. {orderPrice}</span>
                 </li>
+                {delivery == "自取" ? (
+                  ""
+                ) : (
+                  <li className="d-flex justify-content-between mb-10">
+                    <span className="text-gary-500">運費總金額</span>
+                    <span className="text-gary-500">NT. 60</span>
+                  </li>
+                )}
                 <li className="d-flex justify-content-between mb-10">
-                  <span className="text-gary-500">運費總金額</span>
-                  <span className="text-gary-500">NT. 60</span>
-                </li>
-                <li className="d-flex justify-content-between mb-10">
-                  <span className="text-gary-500">折扣</span>
-                  <span className="text-primary-500">－NT. 60</span>
-                </li>
-                <li className="d-flex justify-content-between mb-10">
-                  <span className="text-gary-500">紅利折抵</span>
-                  <span className="text-primary-500">－ NT. 2</span>
+                  <span className="text-gary-500">全館促銷</span>
+                  <span className="text-primary-500">9折</span>
                 </li>
               </ul>
               <div className="d-flex justify-content-between align-items-center border-top border-gary-500 pt-10 pb-6">
                 <span className="text-gary-500 cart-total-price-font">
                   結帳總金額
                 </span>
-                <span className="text-primary-500 fs-4 fw-bold">$ 1,550</span>
+                <span className="text-primary-500 fs-4 fw-bold">$ {Math.round((orderPrice + deliveryFee) * 0.9)}</span>
               </div>
               <div className="d-flex justify-content-between align-items-center cart-info-bgcolor py-8 px-6">
                 <span className="text-gary-500 cart-info-li-text">
                   此筆訂單捐贈後可獲得紅利
                 </span>
-                <span className="text-primary-300 fs-6 fw-bold">11 點</span>
+                <span className="text-primary-300 fs-6 fw-bold">{Math.round(Math.round((orderPrice + deliveryFee) * 0.9) / 100)}{" "}
+                點</span>
               </div>
             </div>
-          </div> */}
+          </div>
+          <div className="fs-2 text-primary-700 fw-bold mb-15">付款方式</div>
           <div>
             <span className="text-gary-500">請選擇付款方式</span>
             <div className="mb-15 mt-6 d-flex gap-10 flex-wrap">
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  pay == "信用卡" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${pay == "信用卡" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setPay("信用卡");
@@ -577,9 +576,8 @@ function UserInfo({ setStep, delivery }) {
               </button>
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  pay == "轉帳" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${pay == "轉帳" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setPay("轉帳");
@@ -589,9 +587,8 @@ function UserInfo({ setStep, delivery }) {
               </button>
               <button
                 type="button"
-                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${
-                  pay == "line" && "active"
-                }`}
+                className={`btn btn-outline-gary-500 py-4 px-13 fs-6 cart-btn-hover ${pay == "line" && "active"
+                  }`}
                 style={{ fontWeight: "500" }}
                 onClick={() => {
                   setPay("line");
