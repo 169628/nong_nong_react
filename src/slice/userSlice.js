@@ -106,6 +106,7 @@ export const registerUser = (email, password, name) => async (dispatch) => {
       dispatch(registerFailure("註冊失敗，請再試一次！"));
     }
   } catch (error) {
+    console.error('Error checking authentication:', error);
     dispatch(registerFailure("註冊失敗，請再試一次！"));
   }
 };
@@ -116,6 +117,7 @@ export const checkAuthStatusAsync = () => async (dispatch) => {
     const res = await axios.get(`${import.meta.env.VITE_APP_URL}/users/check`);
     dispatch(checkAuthStatus(res.data)); // Response data includes `login` field
   } catch (error) {
+    console.error('Error checking authentication:', error);
     dispatch(checkAuthStatus({ login: false }));
   }
 };
