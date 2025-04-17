@@ -328,6 +328,12 @@
     border-radius: 8px;
     margin-top: 16px;
     margin-right: 16px;
+
+    @include mobile {
+        padding: 2px 8px;
+        font-size: 14px;
+        margin-right: 10px;
+    }
 }
 
 .product-cat-tag {
@@ -337,6 +343,12 @@
     border-radius: 8px;
     margin-top: 16px;
     margin-right: 16px;
+
+    @include mobile {
+        padding: 2px 8px;
+        font-size: 14px;
+        margin-right: 10px;
+    }
 }
 
 // 傳遞心意

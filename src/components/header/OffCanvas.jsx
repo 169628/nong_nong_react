@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unknown-property */
 import { useState, useEffect } from "react";
 import { Button, Form, Offcanvas, Container, Dropdown } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -167,12 +170,44 @@ function OffCanvas() {
               </Button>
             </li>
           )}
+
+          <div className="d-flex list-unstyled ms-3">
+            <button
+              type="button"
+              className="btn btn-outline-primary-500 rounded-circle position-relative"
+              onClick={handleCartClick}
+            >
+              <i className="bi bi-cart3 fs-5"></i>
+              <span
+                className={`position-absolute start-100 translate-middle badge rounded-circle bg-secondary-700 py-1 px-2 ${
+                  cartNum == 0 && "d-none"
+                }`}
+                style={{ top: "3px" }}
+              >
+                {cartNum}
+              </span>
+            </button>
+          </div>
         </ul>
 
-        <div className="d-flex list-unstyled ms-3">
+        <div className="d-md-none d-flex list-unstyled ms-3">
+          
           <button
             type="button"
-            className="btn btn-outline-primary-500 rounded-circle position-relative"
+            className="btn btn-outline-white rounded-circle position-relative me-2"
+            onClick={(e) => {
+              e.preventDefault();
+              resetLoginForm();
+              reset();
+              setShowLogin(true);
+            }}
+          >
+            <i className="bi bi-person-fill fs-5"></i>
+          </button> 
+
+          <button
+            type="button"
+            className="btn btn-outline-white rounded-circle position-relative"
             onClick={handleCartClick}
           >
             <i className="bi bi-cart3 fs-5"></i>
@@ -186,6 +221,8 @@ function OffCanvas() {
             </span>
           </button>
         </div>
+
+        
       </div>
 
       {/* Login Form */}
