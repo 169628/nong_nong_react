@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +34,7 @@ function Products() {
       setGoodsCnt(result.data.data[0].total[0].count);
       setIsLoading(false);
     } catch (error) {
+      console.log(error);
       setIsLoading(false);
       console(error);
     }

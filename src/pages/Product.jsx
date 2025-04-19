@@ -465,7 +465,7 @@ function Product() {
                     </h4>
                   </div>
                 </div>
-              </div>
+              </div >
               <div className="describe">
                 <div className="describe-title fs-2 fw-bold text-primary-500 mb-2">
                   {product.storeInfo?.[0]?.introTitle}
@@ -476,11 +476,11 @@ function Product() {
                   <p>{product.storeInfo?.[0]?.introContent2}</p>
                 </div>
               </div>
-            </div>
-          </section>
+            </div >
+          </section >
 
           {/* swiper 評論區 */}
-          <section className="comment py-26 mb-26">
+          <section className="comment py-26 mb-26" >
             <div className="container">
               <div className="title mb-17 d-flex justify-content-center">
                 <img
@@ -877,7 +877,7 @@ function Product() {
           </section>
 
           {/* 購物須知 */}
-          <section className="container instructions">
+          <section className="container instructions" >
             <div className="title mb-17 d-flex justify-content-center">
               <img src="/nong_nong_react/images/icon/hat.svg" alt="hat" />
               <h2
@@ -935,10 +935,11 @@ function Product() {
                 </li>
               </ol>
             </div>
-          </section>
+          </section >
           <StockModal show={show} setShow={setShow} product={product} />
-        </div>
-      )}
+        </div >
+      )
+      }
     </>
   );
 }
