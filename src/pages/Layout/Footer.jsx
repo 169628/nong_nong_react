@@ -35,7 +35,7 @@ function Footer() {
                 </ul>
                 <ul className="list-unstyled pt-4 contact-info">
                   <li className="mb-2 footer-contact-time">
-                    客服時間：週一至週五 09:00 - 18:00
+                    客服時間：週一至週五 09:00 - 18:00
                   </li>
                   <li className="mb-2">
                     <span className="nong-d-none-sm">客服電話：</span>
