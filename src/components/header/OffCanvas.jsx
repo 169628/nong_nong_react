@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   loginUser,
   registerUser,
-  checkAuthStatusAsync,
   logout,
 } from "../../slice/userSlice"; // Redux actions
 import { initCartNum, asyncCart } from "../../slice/cartSlice";
@@ -60,7 +59,7 @@ function OffCanvas() {
       dispatch(asyncCart());
       setShowLogin(false); // Close login modal after successful logins
     }
-  }, [userName, isAuthenticated, error, loading]);
+  }, [userName, isAuthenticated, error, loading, dispatch]);
 
   const handleLoginFormSubmit = async (data) => {
     dispatch(loginUser(data.loginEmail, data.loginPassword)); // Dispatch login action
@@ -138,8 +137,8 @@ function OffCanvas() {
                 <Dropdown align="end">
                   <Dropdown.Toggle
                     as={Button}
-                    variant="primary"
-                    className="rounded-circle  btn-primary-500"
+                    variant="outline-primary"
+                    className="rounded-circle  border-3 btn-outline-primary-500 position-relative"
                     id="dropdown-user-menu"
                   >
                     <i className="bi bi-person fs-5"></i>
@@ -154,7 +153,7 @@ function OffCanvas() {
           ) : (
             <li>
               <Button
-                className="border-0 bg-tertiary-500 py-2 text-white fs-6 rounded-pill"
+                className="border-0 bg-tertiary-500 py-2 text-white login-button rounded-pill"
                 variant="primary"
                 onClick={(e) => {
                   e.preventDefault();
@@ -172,14 +171,13 @@ function OffCanvas() {
         <div className="d-flex list-unstyled ms-3">
           <button
             type="button"
-            className="btn btn-outline-primary-500 rounded-circle position-relative"
+            className="btn btn-outline-primary-500  border-3 rounded-circle position-relative"
             onClick={handleCartClick}
           >
             <i className="bi bi-cart3 fs-5"></i>
             <span
-              className={`position-absolute start-100 translate-middle badge rounded-circle bg-secondary-700 py-1 px-2 ${
-                cartNum == 0 && "d-none"
-              }`}
+              className={`position-absolute start-100 translate-middle badge rounded-circle bg-secondary-700 py-1 px-2 ${cartNum == 0 && "d-none"
+                }`}
               style={{ top: "3px" }}
             >
               {cartNum}
@@ -233,7 +231,7 @@ function OffCanvas() {
             </Form.Group>
             <div className="pt-12 d-flex justify-content-between">
               <button
-                variant="secondary"
+                // variant="secondary"
                 onClick={() => {
                   reset();
                   setShowLogin(false);
@@ -245,7 +243,7 @@ function OffCanvas() {
                 註冊
               </button>
               <button
-                variant="primary"
+                // variant="primary"
                 type="submit"
                 className="w-50 btn btn-primary-500"
                 disabled={loading}
@@ -346,7 +344,7 @@ function OffCanvas() {
             </Form.Group>
             <div className="pt-12 d-flex justify-content-between">
               <button
-                variant="secondary"
+                // variant="secondary"
                 onClick={(e) => {
                   e.preventDefault();
                   setShowRegister(false);
@@ -360,7 +358,7 @@ function OffCanvas() {
                 返回登入
               </button>
               <button
-                variant="primary"
+                // variant="primary"
                 type="submit"
                 className="w-50 btn btn-primary-500"
                 disabled={loading}

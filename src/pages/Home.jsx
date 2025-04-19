@@ -6,10 +6,9 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import RiseLoader from "react-spinners/RiseLoader";
 import { useDispatch, useSelector } from "react-redux";
-
 import { pushToast } from "../slice/toastSlice";
 import { asyncCart } from "../slice/cartSlice";
-import { Modal } from "react-bootstrap";
+import { Modal, Container } from "react-bootstrap";
 
 const areas = ["北部", "中部", "南部", "東部"];
 const categories = ["葉菜類", "根莖瓜果類", "菌菇類", "安心水果類"];
@@ -35,7 +34,7 @@ function Home() {
   const [hotLoading, setHotLoading] = useState(false);
   const [heartLoading, setHeartLoading] = useState(false);
 
-  const [width, setWidth] = useState(window.innerWidth);
+  // const [width, setWidth] = useState(window.innerWidth);
 
   const [showModal, setShowModal] = useState(true);
 
@@ -80,7 +79,7 @@ function Home() {
         );
       }
     };
-  }, []);
+  }, [tagList]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -109,13 +108,13 @@ function Home() {
     setMenuCate(["北部", "南部"].includes(area) ? categories : categories2);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setWidth(window.innerWidth);
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
   const addToCart = async (e, id) => {
     try {
@@ -162,7 +161,7 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=最新上架`
       );
-      setNewGoods(result.data.data[0].results);
+      setNewGoods(result?.data?.data[0]?.results);
       setNewLoading(false);
     } catch (error) {
       console.log(error);
@@ -174,10 +173,19 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=熱門商品`
       );
-      setHotGoods(result.data.data[0].results);
+      // setHotGoods(result?.data?.data[0]?.results);
+      const data = result?.data?.data;
+      if (Array.isArray(data) && data.length > 0) {
+        setHotGoods(data[0].results ?? []);
+      } else {
+        console.warn("getHotProducts: 沒有取得有效資料", data);
+        setHotGoods([]);
+      }
       setHotLoading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      console.error("getHotProducts 錯誤：", error);
+      setHotLoading(false);
     }
   };
   const getHeartProducts = async () => {
@@ -186,7 +194,7 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=捐贈`
       );
-      setHeartGoods(result.data.data[0].results);
+      setHeartGoods(result?.data?.data[0].results);
       setHeartLoading(false);
     } catch (error) {
       console.log(error);
@@ -214,54 +222,67 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    new Swiper(".mySwiper", {
-      slidesPerView: 4,
-      spaceBetween: 24,
-      loop: true,
-      autoplay: {
-        delay: 3000, //N秒切换一次
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 2.3,
-          spaceBetween: 0,
+    let swiper;
+    if (hotGoods?.length) {
+      swiper = new Swiper(".mySwiper", {
+        slidesPerView: 4,
+        spaceBetween: 24,
+        loop: true,
+        autoplay: {
+          delay: 3000, //N秒切换一次
         },
-        768: {
-          slidesPerView: "auto",
-          spaceBetween: 24,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
-      },
-    });
-  }, [newLoading]);
+        breakpoints: {
+          0: {
+            slidesPerView: 2.3,
+            spaceBetween: 0,
+          },
+          768: {
+            slidesPerView: "auto",
+            spaceBetween: 24,
+          },
+        },
+      });
+    }
+    return () => {
+      if (swiper && swiper.destroy) swiper.destroy();
+      //  清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
+    };
+  }, [newLoading, hotGoods]);
 
   useEffect(() => {
-    new Swiper(".hotSwiper", {
-      slidesPerView: 4,
-      spaceBetween: 24,
-      loop: true,
-      autoplay: {
-        delay: 4000, //N秒切换一次
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      breakpoints: {
-        0: {
-          slidesPerView: 2.3,
-          spaceBetween: 0,
+    let swiper;
+    if (hotGoods.length) {
+      swiper = new Swiper(".hotSwiper", {
+        slidesPerView: 4,
+        spaceBetween: 24,
+        loop: true,
+        autoplay: {
+          delay: 4000, //N秒切换一次
         },
-        768: {
-          slidesPerView: "auto",
-          spaceBetween: 24,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
-      },
-    });
-  }, [hotLoading]);
+        breakpoints: {
+          0: {
+            slidesPerView: 2.3,
+            spaceBetween: 0,
+          },
+          768: {
+            slidesPerView: "auto",
+            spaceBetween: 24,
+          },
+        },
+      });
+    }
+    return () => {
+      if (swiper && swiper.destroy) swiper.destroy(); // 清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
+    };
+  }, [hotLoading, hotGoods]);
 
   useEffect(() => {
     new Swiper(".idx-heart-swiper", {
@@ -287,11 +308,13 @@ function Home() {
     });
   }, [heartLoading]);
 
+  const swiperRef = useRef(null);
   useEffect(() => {
+    if (!swiperRef.current) return;
+
     const swiper = new Swiper(".idx-comment-list", {
-      slidesPerView: 3,
+      // slidesPerView: 3,
       spaceBetween: 24,
-      direction: width <= 374 ? "vertical" : "horizontal",
       loop: true,
       autoplay: {
         delay: 2500, //N秒切换一次
@@ -302,20 +325,79 @@ function Home() {
       },
       breakpoints: {
         0: {
-          slidesPerView: "auto",
+          slidesPerView: 3,
+          direction: "vertical", // 小於 375px 垂直
+          // spaceBetween: 24,
         },
+        375: {
+          slidesPerView: 2,
+          direction: "vertical",
+        },
+        400: {
+          slidesPerView: "auto",
+          direction: "horizontal",
+        },
+        1200: {
+          slidesPerView: 3,
+          direction: "horizontal",
+        }
       },
     });
-    swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
-
     return () => {
-      // 清除 Swiper 实例
-      swiper.destroy();
+      // 清除 Swiper 實例
+      if (swiper && swiper.destroy) swiper.destroy(true, true);
     };
-  }, [width]);
+  }, []);
 
   return (
     <>
+      <div className="d-block d-md-none position-relative bg-primary-500  w-100 d-flex align-item-center justify-content-center " >
+        {/* search area */}
+
+        <div className="position-sticky bg-primary-500 top-0 z-1 py-2 px-2 " style={{ maxheight: '100px' }}>
+          <Container fluid className="p-0">
+            <div className="position-relative">
+              <a
+                className="position-absolute text-primary-300 py-4 px-8"
+                // className="position-absolute ml-3 me-3 top-50 translate-middle-y text-primary"
+                href="#"
+                onClick={handleSearch}
+              >
+                <i className="bi bi-search" style={{ pointerEvents: 'none' }}></i>
+              </a>
+
+              <input
+                type="text"
+                className="rounded-pill py-3 px-30 w-100"
+                style={{ height: '48px', minWidth: '30px' }}
+                placeholder="請輸入關鍵字..."
+                role="button"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyUp={handleSubmit}
+                ref={dropdownMenuRef}
+              />
+
+            </div>
+          </Container>
+
+          <div
+            className=" bg-primary-500 position-relative w-100 "
+            ref={searchTagListRef}
+          >
+            <ul className="list-unstyled d-flex justify-content-between mt-3" style={{}}>
+              {tagList.map((tag) => (
+                <li className="search-tag" key={tag} style={{ color: '#FFFFFF' }}>
+                  <Link to={`/products/search/${tag}`}>#{tag}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+
+        </div>
+      </div >
+
       <div className="idx-banner">
         <div className="swiper banner-swiper">
           <div className="swiper-wrapper idx-banner-item">
@@ -325,7 +407,7 @@ function Home() {
                   media="(min-width: 375px)"
                   srcSet="/nong_nong_react/images/index/banner/banner-01.png"
                 />
-                <img src="/nong_nong_react/images/index/banner/banner-mobile-01.png" />
+                <img className="img-fluid w-100" src="/nong_nong_react/images/index/banner/banner-mobile-01.png" />
               </picture>
             </div>
             <div className="swiper-slide">
@@ -334,7 +416,7 @@ function Home() {
                   media="(min-width: 375px)"
                   srcSet="/nong_nong_react/images/index/banner/banner-02.png"
                 />
-                <img src="/nong_nong_react/images/index/banner/banner-mobile-02.png" />
+                <img className="img-fluid w-100" src="/nong_nong_react/images/index/banner/banner-mobile-02.png" />
               </picture>
             </div>
           </div>
@@ -391,9 +473,8 @@ function Home() {
                   {areas.map((area) => (
                     <li
                       key={area}
-                      className={`${
-                        selectedArea === area ? "item-current" : ""
-                      }`}
+                      className={`${selectedArea === area ? "item-current" : ""
+                        }`}
                     >
                       <a
                         className="search-item"
@@ -743,8 +824,12 @@ function Home() {
                     </div>
                   ))}
                 </div>
-                <div className="swiper-button-next swiper-btn-white"></div>
-                <div className="swiper-button-prev swiper-btn-white"></div>
+                <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
+                </div>
+                <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
+                </div>
               </div>
             )}
 
@@ -924,7 +1009,7 @@ function Home() {
             </p>
             <p>以下是來自使用者的寶貴回饋</p>
           </div>
-          <div className="swiper idx-comment-list">
+          <div className="swiper idx-comment-list" ref={swiperRef}>
             <div className="swiper-wrapper">
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
@@ -1216,8 +1301,14 @@ function Home() {
                 </div>
               </div>
             </div>
-            <div className="swiper-button-next swiper-btn-white"></div>
-            <div className="swiper-button-prev swiper-btn-white"></div>
+
+            <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
+              <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
+            </div>
+            <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
+              <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
+            </div>
+
           </div>
         </div>
       </div>

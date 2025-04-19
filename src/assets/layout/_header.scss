@@ -13,16 +13,20 @@
   @media (max-width: 1570px) {
     max-width: 1338px;
   }
+
   @media (max-width: 1399px) {
     max-width: 1158px;
   }
+
   @media (max-width: 1199px) {
     max-width: 978px;
   }
+
   @include pad {
     max-width: 738px;
     margin-top: 20px;
   }
+
   @include mobile {
     position: relative;
     margin-bottom: 0;
@@ -46,9 +50,11 @@
   @media (max-width: 1399px) {
     max-width: 1116px;
   }
+
   @media (max-width: 1199px) {
     max-width: 936px;
   }
+
   @include pad {
     max-width: 696px;
   }
@@ -72,6 +78,7 @@
 
 .header-logo {
   width: 252px;
+
   @include mobile {
     width: 160px;
   }
@@ -91,9 +98,11 @@
   padding: 24px 48px;
   border: 3px $white solid;
   border-radius: 40px;
+
   a {
     color: $gray-500;
     font-weight: 500;
+
     &:hover {
       color: $primary-500;
       font-weight: 600;
@@ -107,4 +116,11 @@
 
 .header-input {
   outline: none;
+}
+
+.mobile-header {
+  max-height: 100%;
+  /* 使圖片的高度不會超過父容器 */
+  height: auto;
+  /* 讓圖片保持原有比例 */
 }

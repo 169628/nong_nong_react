@@ -43,7 +43,7 @@ function Footer() {
                   </li>
                   <li>
                     <span className="nong-d-none-sm">客服信箱：</span>
-                    <a href="mailto: exmanple@mail.com">exmanple@mail.com</a>
+                    <a href="mailto: exmanple@mail.com">example@mail.com</a>
                   </li>
                 </ul>
               </div>

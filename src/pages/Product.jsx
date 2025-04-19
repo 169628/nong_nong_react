@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import RiseLoader from "react-spinners/RiseLoader";
 import StockModal from "../components/oneProduct/stockModal";
@@ -16,13 +16,13 @@ function Product() {
   const [num, setNum] = useState(1);
   const { userId } = useSelector((state) => state.user);
 
-  const [width, setWidth] = useState(window.innerWidth);
+  // const [width, setWidth] = useState(window.innerWidth);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const getProduct = async () => {
+  const getProduct = useCallback(async () => {
     try {
       setLoading(true);
       const result = await axios.get(
@@ -39,7 +39,7 @@ function Product() {
       console.log(error);
       navigate("/page404");
     }
-  };
+  }, [id, navigate]); // ✅ 將用到的變數設為依賴
 
   const addToCart = async () => {
     try {
@@ -82,25 +82,26 @@ function Product() {
 
   useEffect(() => {
     getProduct();
-  }, []);
+  }, [getProduct]);
 
   const handleModal = () => {
     setShow(true);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setWidth(window.innerWidth);
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
 
+  const swiperRef = useRef(null);
   useEffect(() => {
+    if (!swiperRef.current) return;
+
     const swiper = new Swiper(".idx-comment-list", {
-      slidesPerView: 3,
       spaceBetween: 24,
-      direction: width <= 374 ? "vertical" : "horizontal",
       loop: true,
       autoplay: {
         delay: 2500, //N秒切换一次
@@ -111,11 +112,23 @@ function Product() {
       },
       breakpoints: {
         0: {
-          slidesPerView: "auto",
+          slidesPerView: 3,
+          direction: "vertical", // 小於 375px 垂直
         },
+        375: {
+          slidesPerView: 2,
+          direction: "vertical",
+        },
+        400: {
+          slidesPerView: "auto",
+          direction: "horizontal",
+        },
+        1200: {
+          slidesPerView: 3,
+          direction: "horizontal",
+        }
       },
     });
-    swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
 
     if (loading != true) {
       return () => {
@@ -123,7 +136,7 @@ function Product() {
         swiper.destroy();
       };
     }
-  }, [loading, width]);
+  }, [loading]);
 
   return (
     <>
@@ -140,18 +153,16 @@ function Product() {
             <p className="text-gary-500">{`${product.area} / ${product.category} / ${product.name}`}</p>
             <div className="row">
               <div className="col-lg-5 mb-sm-13">
-                <div
-                  style={{
-                    width: "526px",
-                    height: "526px",
-                    overflow: "hidden",
-                    borderRadius: "8px",
-                  }}
-                >
+                <div>
                   <img
-                    className="product-img"
+                    className="img-fluid product-img"
                     src={product.image}
                     alt="產品主照"
+                    style={{
+                      maxWidth: "526px",
+                      maxHeight: "526px", overflow: "hidden",
+                      borderRadius: "8px"
+                    }}
                   />
                 </div>
               </div>
@@ -161,61 +172,64 @@ function Product() {
                   <p className="fs-5">{product.subTitle}</p>
                 </div>
                 <div className="product-price">
-                  <h2 className="fs-2 fw-bold mb-0">NT. {product.price}</h2>
+                  <h2 className="fs-2 fw-bold mb-0">NT. {product.price}</h2>
                 </div>
-                <div className="product-detail d-flex gap-10">
-                  <div className="product-detail-topic">
-                    <ul className="list-unstyled d-flex flex-column gap-10">
-                      <li className="py-2">產地</li>
-                      <li className="py-2">運送方式</li>
-                      <li className="py-2">產品規格</li>
-                      <li className="py-2">購買數量</li>
-                    </ul>
-                  </div>
-                  <div className="product-detail-value">
-                    <ul className="list-unstyled d-flex flex-column gap-10">
-                      <li className="py-2">{product.area}</li>
-                      <li className="py-2">
-                        {product.tags?.keywords?.includes("冷藏")
-                          ? "冷藏"
-                          : "一般"}
-                      </li>
-                      <li className="py-2">{product.unit}</li>
-                      <li>
-                        <div className="btn_quantity">
-                          <button
-                            type="button"
-                            className={`btn ${num == 1 ? "disabled" : ""}`}
-                            onClick={() => {
-                              setNum(num - 1);
-                            }}
-                          >
-                            <img
-                              src="/nong_nong_react/images/icon/decrease.svg"
-                              alt="-"
-                            />
-                          </button>
-                          <input
-                            type="text"
-                            name="quantity"
-                            value={num}
-                            readOnly
+                <div className="product-detail ">
+                  <div className="row gy-10">
+                    <div className="col-3 text-start">產地</div>
+                    <div className="col-9 text-start">{product.area}</div>
+
+                    <div className="col-3 text-start">運送方式</div>
+                    <div className="col-9 text-start">
+                      {product.tags?.keywords?.includes("冷藏") ? "冷藏" : "一般"}
+                    </div>
+
+                    <div className="col-3 text-start">產品規格</div>
+                    <div className="col-9 text-start">{product.unit}</div>
+
+                    <div className="col-3 text-start">購買數量</div>
+                    <div className="col-9">
+                      <div className="btn_quantity d-flex align-items-center border border-gary-500 rounded-1 w-100">
+                        <button
+                          type="button"
+                          className={`btn p-0  border-0 flex-shrink-0 ${num === 1 ? "disabled" : ""
+                            }`}
+                          onClick={() => setNum(num - 1)}
+                        >
+                          <img
+                            className="img-fluid "
+                            src="/nong_nong_react/images/icon/decrease.svg"
+                            alt="-"
+                            style={{ maxWidth: "24px" }}
                           />
-                          <button
-                            type="button"
-                            className="btn"
-                            onClick={() => {
-                              setNum(num + 1);
-                            }}
-                          >
-                            <img
-                              src="/nong_nong_react/images/icon/increase.svg"
-                              alt="+"
-                            />
-                          </button>
-                        </div>
-                      </li>
-                    </ul>
+                        </button>
+
+                        <input
+                          type="text"
+                          name="quantity"
+                          className="form-control text-center flex-grow-1 "
+                          style={{
+                            width: "346px",
+                            minWidth: "40px",
+                          }}
+                          value={num}
+                          readOnly
+                        />
+
+                        <button
+                          type="button"
+                          className="btn  border-0 btn-outline-secondary  p-0 flex-shrink-0"
+                          onClick={() => setNum(num + 1)}
+                        >
+                          <img
+                            className="img-fluid w-100"
+                            src="/nong_nong_react/images/icon/increase.svg"
+                            alt="+"
+                            style={{ maxWidth: "24px" }}
+                          />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="product-buyandstorage d-flex flex-column gap-10">
@@ -427,16 +441,20 @@ function Product() {
                   alt="小農園"
                 />
                 <div className="farm-owner">
-                  <div
-                    style={{
-                      width: "230px",
-                      height: "230px",
-                      overflow: "hidden",
-                      borderRadius: "50%",
-                      border: "2px white solid",
-                    }}
-                  >
-                    <img src={product.storeInfo?.[0]?.image} alt="小農" />
+                  <div>
+                    <img src={product.storeInfo?.[0]?.image} alt="小農"
+                      style={{
+                        maxWidth: "230px",
+                        aspectRatio: " 1 / 1",
+                        overflow: "hidden",
+                        borderRadius: "50%",
+                        border: "2px white solid",
+
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }} />
                   </div>
                   <div className="d-flex flex-column align-items-center">
                     <div className="farm-name fw-bold text-primary-500 ">
@@ -481,7 +499,7 @@ function Product() {
                   alt="rice-ears"
                 />
               </div>
-              <div className="swiper idx-comment-list">
+              <div className="swiper idx-comment-list" ref={swiperRef} >
                 <div className="swiper-wrapper">
                   <div className="swiper-slide idx-comment-item">
                     <div className="row g-0">
@@ -848,8 +866,12 @@ function Product() {
                     </div>
                   </div>
                 </div>
-                <div className="swiper-button-next swiper-btn-white"></div>
-                <div className="swiper-button-prev swiper-btn-white"></div>
+                <div className="swiper-button-next swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-right-short fs-1 text-primary-500"></i>
+                </div>
+                <div className="swiper-button-prev swiper-btn-white d-none d-lg-flex btn-swiper">
+                  <i className="bi bi-arrow-left-short fs-1 text-primary-500"></i>
+                </div>
               </div>
             </div>
           </section>

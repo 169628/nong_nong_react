@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -19,7 +19,7 @@ function Products() {
   const dispatch = useDispatch();
   const { userId } = useSelector((state) => state.user);
 
-  const getProducts = async (page = 1) => {
+  const getProducts = useCallback(async (page = 1) => {
     let apiUrl = `${import.meta.env.VITE_APP_URL}/products?page=${page}`;
     if (keywords != "" && keywords != undefined) {
       apiUrl += "&search=" + keywords;
@@ -34,8 +34,9 @@ function Products() {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
+      console(error);
     }
-  };
+  }, [keywords]);
 
   const hdlPageChange = (page) => {
     getProducts(page);
@@ -81,7 +82,7 @@ function Products() {
   };
   useEffect(() => {
     getProducts();
-  }, [keywords]);
+  }, [getProducts]);
 
   return (
     <>
@@ -96,13 +97,12 @@ function Products() {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {`${
-                  keywords != "" &&
+                {`${keywords != "" &&
                   keywords != undefined &&
                   categories.includes(keywords)
-                    ? keywords
-                    : "所有商品"
-                }`}
+                  ? keywords
+                  : "所有商品"
+                  }`}
               </button>
               <ul
                 className="dropdown-menu"
@@ -111,9 +111,8 @@ function Products() {
                 <li>
                   <Link
                     to={`/products`}
-                    className={`dropdown-item${
-                      keywords != "" && keywords != undefined ? "" : " active"
-                    }`}
+                    className={`dropdown-item${keywords != "" && keywords != undefined ? "" : " active"
+                      }`}
                   >
                     所有商品
                   </Link>
@@ -256,11 +255,10 @@ function Products() {
                         {Array.apply(null, { length: goodsCnt / 16 + 1 }).map(
                           (_, index) => (
                             <button
-                              className={`${
-                                curPage == index + 1
-                                  ? "admin-pagination-btn current"
-                                  : "admin-pagination-btn"
-                              }`}
+                              className={`${curPage == index + 1
+                                ? "admin-pagination-btn current"
+                                : "admin-pagination-btn"
+                                }`}
                               type="button"
                               key={index + 1}
                               onClick={() => hdlPageChange(index + 1)}
