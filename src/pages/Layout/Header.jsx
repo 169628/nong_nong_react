@@ -9,7 +9,7 @@ function Header() {
         <Link className="m-0 p-0" to="/">
           <picture>
             <source
-              srcSet="/nong_nong_react/images/logo/logo_horizontal.png"
+              srcSet="/nong_nong_react/images/logo/logo_horizontal_white.png"
               media="(max-width: 767px)"
             />
             <img

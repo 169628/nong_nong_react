@@ -82,6 +82,7 @@ function Product() {
 
   useEffect(() => {
     getProduct();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleModal = () => {
@@ -141,12 +142,7 @@ function Product() {
             <div className="row">
               <div className="col-lg-5 mb-sm-13">
                 <div
-                  style={{
-                    width: "526px",
-                    height: "526px",
-                    overflow: "hidden",
-                    borderRadius: "8px",
-                  }}
+                  className="pic-div"
                 >
                   <img
                     className="product-img"
@@ -161,7 +157,7 @@ function Product() {
                   <p className="fs-5">{product.subTitle}</p>
                 </div>
                 <div className="product-price">
-                  <h2 className="fs-2 fw-bold mb-0">NT. {product.price}</h2>
+                  <h2 className="fs-2 fw-bold mb-0">NT. {product.price}</h2>
                 </div>
                 <div className="product-detail d-flex gap-10">
                   <div className="product-detail-topic">
@@ -427,16 +423,8 @@ function Product() {
                   alt="小農園"
                 />
                 <div className="farm-owner">
-                  <div
-                    style={{
-                      width: "230px",
-                      height: "230px",
-                      overflow: "hidden",
-                      borderRadius: "50%",
-                      border: "2px white solid",
-                    }}
-                  >
-                    <img src={product.storeInfo?.[0]?.image} alt="小農" />
+                  <div className="owner-div">
+                    <img className="rounded-circle" src={product.storeInfo?.[0]?.image} alt="小農" />
                   </div>
                   <div className="d-flex flex-column align-items-center">
                     <div className="farm-name fw-bold text-primary-500 ">
