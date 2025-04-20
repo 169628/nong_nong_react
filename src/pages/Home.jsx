@@ -248,7 +248,7 @@ function Home() {
       });
     }
     return () => {
-      if (swiper && swiper.destroy) swiper.destroy();
+      if (swiper && typeof swiper?.destroy === "function") swiper.destroy();
       //  清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
     };
   }, [newLoading, hotGoods]);
@@ -280,7 +280,7 @@ function Home() {
       });
     }
     return () => {
-      if (swiper && swiper.destroy) swiper.destroy(); // 清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
+      if (swiper && typeof swiper?.destroy === "function") swiper.destroy(); // 清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
     };
   }, [hotLoading, hotGoods]);
 
@@ -345,7 +345,7 @@ function Home() {
     });
     return () => {
       // 清除 Swiper 實例
-      if (swiper && swiper.destroy) swiper.destroy(true, true);
+      if (swiper && typeof swiper?.destroy === "function") swiper.destroy(true, true);
     };
   }, []);
 

@@ -130,6 +130,7 @@ function OffCanvasSm() {
   const [currentLevel, setCurrentLevel] = useState(0);
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [selectedItem, setSelectedItem] = useState(null);
 
   const regions = ['北部', '中部', '南部', '東部'];
@@ -240,7 +241,7 @@ function OffCanvasSm() {
       </div >
 
       {/* mobile Menu */}
-      < Offcanvas Offcanvas show={showMenu} onHide={() => setShowMenu(false)
+      < Offcanvas show={showMenu} onHide={() => setShowMenu(false)
       }>
         <Offcanvas.Header closeButton>
           <Offcanvas.Title></Offcanvas.Title>
@@ -482,7 +483,7 @@ function OffCanvasSm() {
                   // variant="secondary"
                   onClick={() => {
                     reset();
-                    setShowLogin(false);
+
                     setShowRegister(true);
                   }}
                   className="btn btn-outline-primary-500"
