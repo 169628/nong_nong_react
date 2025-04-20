@@ -171,7 +171,7 @@ function OffCanvas() {
           <div className="d-flex list-unstyled ms-3">
             <button
               type="button"
-              className="btn btn-outline-primary-500 rounded-circle position-relative"
+              className="btn btn-outline-primary-500 border-3 rounded-circle position-relative"
               onClick={handleCartClick}
             >
               <i className="bi bi-cart3 fs-5"></i>
@@ -190,7 +190,7 @@ function OffCanvas() {
 
           <button
             type="button"
-            className="btn btn-outline-primary-500  border-3 rounded-circle position-relative"
+            className="btn btn-outline-primary-500 border-3 rounded-circle position-relative"
             onClick={handleCartClick}
           >
             <i className="bi bi-cart3 fs-5"></i>
