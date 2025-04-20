@@ -349,8 +349,8 @@ function OffCanvasSm() {
               </div>
 
               <ul className="list-unstyled list-group">
-                {items[selectedCategory].map((item) => (<>
-
+                {items[selectedCategory].map((item) => (
+                  // <>
                   <a key={item} type="button"
                     className="list-group-item list-group-item-action d-flex justify-content-between mb-4 text-gary-500  border-0" onClick={() => handleItemClick(item)}>
                     {item}
@@ -359,7 +359,7 @@ function OffCanvasSm() {
                       alt="prev_next"></img>
                   </a>
 
-                </>
+                  // </>
                 ))}
               </ul>
             </div>
