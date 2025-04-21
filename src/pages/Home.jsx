@@ -34,7 +34,7 @@ function Home() {
   const [hotLoading, setHotLoading] = useState(false);
   const [heartLoading, setHeartLoading] = useState(false);
 
-  // const [width, setWidth] = useState(window.innerWidth);
+  const [width, setWidth] = useState(window.innerWidth);
 
   const [showModal, setShowModal] = useState(true);
 
@@ -108,13 +108,13 @@ function Home() {
     setMenuCate(["北部", "南部"].includes(area) ? categories : categories2);
   };
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setWidth(window.innerWidth);
-  //   };
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const addToCart = async (e, id) => {
     try {
@@ -161,7 +161,7 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=最新上架`
       );
-      setNewGoods(result?.data?.data[0]?.results);
+      setNewGoods(result.data.data[0].results);
       setNewLoading(false);
     } catch (error) {
       console.log(error);
@@ -173,19 +173,10 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=熱門商品`
       );
-      // setHotGoods(result?.data?.data[0]?.results);
-      const data = result?.data?.data;
-      if (Array.isArray(data) && data.length > 0) {
-        setHotGoods(data[0].results ?? []);
-      } else {
-        console.warn("getHotProducts: 沒有取得有效資料", data);
-        setHotGoods([]);
-      }
+      setHotGoods(result.data.data[0].results);
       setHotLoading(false);
     } catch (error) {
-      // console.log(error);
       console.error("getHotProducts 錯誤：", error);
-      setHotLoading(false);
     }
   };
   const getHeartProducts = async () => {
@@ -194,7 +185,7 @@ function Home() {
       const result = await axios.get(
         `${import.meta.env.VITE_APP_URL}/products?search=捐贈`
       );
-      setHeartGoods(result?.data?.data[0].results);
+      setHeartGoods(result.data.data[0].results);
       setHeartLoading(false);
     } catch (error) {
       console.log(error);
@@ -222,67 +213,54 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    let swiper;
-    if (hotGoods?.length) {
-      swiper = new Swiper(".mySwiper", {
-        slidesPerView: 4,
-        spaceBetween: 24,
-        loop: true,
-        autoplay: {
-          delay: 3000, //N秒切换一次
+    new Swiper(".mySwiper", {
+      slidesPerView: 4,
+      spaceBetween: 24,
+      loop: true,
+      autoplay: {
+        delay: 3000, //N秒切换一次
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 2.3,
+          spaceBetween: 0,
         },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+        768: {
+          slidesPerView: "auto",
+          spaceBetween: 24,
         },
-        breakpoints: {
-          0: {
-            slidesPerView: 2.3,
-            spaceBetween: 0,
-          },
-          768: {
-            slidesPerView: "auto",
-            spaceBetween: 24,
-          },
-        },
-      });
-    }
-    return () => {
-      if (swiper && typeof swiper?.destroy === "function") swiper.destroy();
-      //  清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
-    };
-  }, [newLoading, hotGoods]);
+      },
+    });
+  }, [newLoading]);
 
   useEffect(() => {
-    let swiper;
-    if (hotGoods.length) {
-      swiper = new Swiper(".hotSwiper", {
-        slidesPerView: 4,
-        spaceBetween: 24,
-        loop: true,
-        autoplay: {
-          delay: 4000, //N秒切换一次
+    new Swiper(".hotSwiper", {
+      slidesPerView: 4,
+      spaceBetween: 24,
+      loop: true,
+      autoplay: {
+        delay: 4000, //N秒切换一次
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 2.3,
+          spaceBetween: 0,
         },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+        768: {
+          slidesPerView: "auto",
+          spaceBetween: 24,
         },
-        breakpoints: {
-          0: {
-            slidesPerView: 2.3,
-            spaceBetween: 0,
-          },
-          768: {
-            slidesPerView: "auto",
-            spaceBetween: 24,
-          },
-        },
-      });
-    }
-    return () => {
-      if (swiper && typeof swiper?.destroy === "function") swiper.destroy(); // 清除; 如果你多次執行 new Swiper() 而不清除舊的，可能會產生多重初始化的問題
-    };
-  }, [hotLoading, hotGoods]);
+      },
+    });
+  }, [hotLoading]);
 
   useEffect(() => {
     new Swiper(".idx-heart-swiper", {
@@ -308,13 +286,11 @@ function Home() {
     });
   }, [heartLoading]);
 
-  const swiperRef = useRef(null);
   useEffect(() => {
-    if (!swiperRef.current) return;
-
     const swiper = new Swiper(".idx-comment-list", {
       // slidesPerView: 3,
       spaceBetween: 24,
+      direction: width <= 374 ? "vertical" : "horizontal",
       loop: true,
       autoplay: {
         delay: 2500, //N秒切换一次
@@ -343,11 +319,13 @@ function Home() {
         }
       },
     });
+    // swiper.changeDirection(width <= 374 ? "vertical" : "horizontal");
+
     return () => {
-      // 清除 Swiper 實例
-      if (swiper && typeof swiper?.destroy === "function") swiper.destroy(true, true);
+      // 清除 Swiper 实例
+      swiper.destroy();
     };
-  }, []);
+  }, [width]);
 
   return (
     <>
@@ -1009,7 +987,7 @@ function Home() {
             </p>
             <p>以下是來自使用者的寶貴回饋</p>
           </div>
-          <div className="swiper idx-comment-list" ref={swiperRef}>
+          <div className="swiper idx-comment-list" >
             <div className="swiper-wrapper">
               <div className="swiper-slide idx-comment-item">
                 <div className="row g-0">
